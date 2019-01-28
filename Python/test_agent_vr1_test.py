@@ -16,8 +16,9 @@ while not is_done:
     frame, reward, is_done, _ = env.step(env.action_space.sample())
     print(env.action_space.sample())
     data.append(reward)
-  # Render
+    #Render
     env.render()
 
-plt.plot(data)
-plt.show()
+# plt.plot(data)
+# plt.show()
+sum(data)
