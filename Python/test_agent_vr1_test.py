@@ -14,11 +14,11 @@ while not is_done:
     # Perform a random action, returns the new frame, reward and whether the game is over
 
     frame, reward, is_done, _ = env.step(env.action_space.sample())
-    print(env.action_space.sample())
+    # print(env.action_space.sample())
     data.append(reward)
     #Render
     env.render()
-
+env.close()
 # plt.plot(data)
 # plt.show()
-sum(data)
+print(sum(data))
