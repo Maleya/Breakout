@@ -1,21 +1,31 @@
 # Neural Network architecture.
 # Input: preprocessed image of size 84 x 84 x 4.
 # Layer 1 convolves 16 8x8 filters
-import keras
+#import keras
+'''
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from keras.layers import Input, LSTM, Embedding, Dense
 from keras.models import Model, Sequential
 import gym
 import numpy as np
 import random as rnd
+'''
 
 #input_shape = (80, 80, 4)
 
 class DQN_net:
-    def __init__(self, input_size, action_size):
+    def __init__(self, input_size, action_size,
+                 batch_size = 32,
+                 discount_factor = 0.95,
+                 learning_rate=0.00025,
+                 epsilon=0.1):
         #Parameters
         self.actions = action_size #Size of actions space, will be the size of network output
         self.input_size = input_size
+        self.discount_factor = discount_factor  # Discount factor of the MDP
+        self.learning_rate = learning_rate  # Learning rate
+        self.epsilon = epsilon  # Probability of dropout
+        self.batch_size = batch_size
 
         # Sequential() creates the foundation of the layers.
         self.model = Sequential()
@@ -46,6 +56,41 @@ class DQN_net:
                            optimizer='rmsprop',
                            metrics=['accuracy'])
 
+        def train(self, experience_batch, target_network):
+            ''' Experience_batch is a list of size "batch_size" with elements
+            randomly drawn from the Replay-memory.
+            elements = (state, action, reward, next_state, done)
+            -DQN_target is a DQN_net instance to generate target according
+            to the DQN algorithm.
+            '''
+
+            state_train = np.zeros(self.batch_size)
+            target_train = np.zeros(self.batch_size)
+
+            for i_train, experience in enumerate(experience_batch):
+                # Inputs are the states
+                state_train[i_train] = experience[0]
+
+                action_train = experience[1]
+                reward_train = experience[2]
+                next_state_train = experience[3]
+                is_done = experience[4]
+
+                next_state_pred = DQN_target.predict(next_state_train)
+                next_q_value_pred = np.max(next_state_pred)
+
+                if is_done == True:
+                    target_train[i_train] = reward_train
+                else:
+                    target_train[i_train] = reward_train + \
+                                            self.discount_factor * next_q_value_pred
+            #Need to do .squeeze()?? on state + target
+            # Train the model for one epoch
+            self.model.fit(state_train,
+                           target_train,
+                           batch_size=self.batch_size,
+                           nb_epoch=1)
+
 
 #TEST CODE
 if __name__ == "__main__":
@@ -57,13 +102,13 @@ if __name__ == "__main__":
     action_size = env.action_space.n #Gives a size of 9?!? change to 4!!
     print(action_size)
     test_net = DQN_net(state_size, action_size)
-    '''
+
     # Formatting input shape for first conv2D layer
     frame, reward, is_done, _ = env.step(env.action_space.sample())
     #y = np.reshape(x, (10, 15, 1))
     #print(frame[1][1][1])
     obs = np.expand_dims(frame, axis=0)     # (Formatting issues) Making the observation the first element of a batch of inputs
     #input_tensor = np.stack((frame, frame), axis=1)
+    #print(obs)
     target_f = test_net.model.predict(obs)
     #(1,210,120,3)
-    '''
