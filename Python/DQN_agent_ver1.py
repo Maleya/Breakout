@@ -1,13 +1,8 @@
-import keras
-from keras.layers import Conv2D, MaxPooling2D, Flatten
-from keras.layers import Input, LSTM, Embedding, Dense
-from keras.models import Model, Sequential
+
 import gym
 import numpy as np
 import random as rnd
-
 from collections import deque
-
 from NN_ver1 import DQN_net
 
 
@@ -80,5 +75,5 @@ if __name__ == "__main__":
     new_state = np.expand_dims(new_frame, axis=0)
     test_agent.add_experience(state,action,reward,new_state,is_done)
     experience_batch = test_agent.sample_experience()
-    print(experience_batch)
+    #print(experience_batch)
     test_agent.network.train(experience_batch, test_agent.target_network)

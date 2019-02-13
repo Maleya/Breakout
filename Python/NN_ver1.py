@@ -1,17 +1,12 @@
 # Neural Network architecture.
-# Input: preprocessed image of size 84 x 84 x 4.
-# Layer 1 convolves 16 8x8 filters
-#import keras
 
-from keras.layers import Conv2D, MaxPooling2D, Flatten
-from keras.layers import Input, LSTM, Embedding, Dense
-from keras.models import Model, Sequential
+from keras.models import Sequential
+from keras.layers import Conv2D, Flatten, Dense
 import gym
 import numpy as np
 import random
 
 
-#input_shape = (80, 80, 4)
 
 class DQN_net:
     def __init__(self, input_size, action_size,
@@ -20,10 +15,10 @@ class DQN_net:
                  learning_rate = 0.00025,
                  epsilon = 0.1):
         #Hyper Parameters
-        self.actions = action_size 
+        self.actions = action_size
         self.input_size = input_size
-        self.discount_factor = discount_factor  
-        self.learning_rate = learning_rate  
+        self.discount_factor = discount_factor
+        self.learning_rate = learning_rate
         self.epsilon = epsilon  # Param for exploration
         self.batch_size = batch_size
 
@@ -60,14 +55,13 @@ class DQN_net:
         ''' Experience_batch is a list of size "batch_size" with elements
         randomly drawn from the Replay-memory.
         elements = (state, action, reward, next_state, done)
-        -DQN_target is a DQN_net instance to generate target according
+        -target_network is a DQN_net instance to generate target according
         to the DQN algorithm.
         '''
 
         state_train = np.zeros((self.batch_size,) + self.input_size)
-        print("foobar",state_train)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
-        print(target_train)
+        #print('target_train=',target_train)
         for i_train, experience in enumerate(experience_batch):
             # Inputs are the states
             #print('state_train is' + str(experience[0]))
@@ -79,27 +73,28 @@ class DQN_net:
             is_done = experience[4]
 
             output_target_pred = target_network.model.predict(next_state_train)
+            #print('output_target pred=',output_target_pred)
             #next_q_value_pred = np.max(output_target_pred)
             max_q_action = np.argmax(output_target_pred)
-            print(max_q_action)
-            print(output_target_pred)
+            #print(max_q_action)
+            #print(output_target_pred)
 
             #BEllMAN..?
             if is_done == True:
                 target_train[i_train][max_q_action] = reward_train
             else:
                 target_train[i_train][max_q_action] = reward_train + \
-                                        self.discount_factor * output_target_pred[i_train][max_q_action]
+                                        self.discount_factor * output_target_pred[0][max_q_action]
         #Need to do .ravel() / .squeeze()?? on state + target
         #state_train = state_train.ravel()
         #state_train = np.asarray(state_train).squeeze()
         #target_train = np.asarray(target_train).squeeze()
         # Train the model for one epoch
-        print('New target_train' + str(target_train))
+        #print('New target_train' + str(target_train))
         self.model.fit(state_train,
                        target_train,
-                       batch_size=self.batch_size,
-                       epochs=1)
+                       batch_size = self.batch_size,
+                       epochs=10)
 
 
 #TEST CODE
