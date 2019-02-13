@@ -4,18 +4,18 @@ from keras.layers import Conv2D, Flatten, Dense
 import gym
 import numpy as np
 import random as rnd
-
 from collections import deque
-
 from NN_ver1 import DQN_net
 from pre_process import pre_process
 from DQN_agent_ver1 import DQN_Agent
 
+
 def episode(agent):
+    '''Docstring'''
     frame = env.reset()
     frame = pre_process(frame)
     history_stack = deque(maxlen = 4)
-    for i range(4):
+    for i in range(4):
         history_stack.append(frame)
     #new_state = np.stack((frame, frame, frame, frame), axis=-1)
     is_done = False
@@ -35,6 +35,7 @@ def episode(agent):
 env = gym.make('MsPacman-v0')
 #counter = 0
 def train(num_episodes):
+    '''Docstring'''
     frame = env.reset()
     frame = pre_process(frame)
     state = np.stack((frame, frame, frame, frame), axis=-1)
