@@ -10,11 +10,14 @@ from pre_process import pre_process
 from DQN_agent_ver1 import DQN_Agent
 
 
+env = gym.make('MsPacman-v0')
+
 def episode(agent):
     '''Docstring'''
     frame = env.reset()
     frame = pre_process(frame)
     history_stack = deque(maxlen = 4)
+
     for i in range(4):
         history_stack.append(frame)
     #new_state = np.stack((frame, frame, frame, frame), axis=-1)
@@ -32,7 +35,6 @@ def episode(agent):
 
         frame = new_frame
 
-env = gym.make('MsPacman-v0')
 #counter = 0
 def train(num_episodes):
     '''Docstring'''
