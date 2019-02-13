@@ -19,19 +19,19 @@ class DQN_net:
                  discount_factor = 0.95,
                  learning_rate = 0.00025,
                  epsilon = 0.1):
-        #Parameters
-        self.actions = action_size #Size of actions space, will be the size of network output
+        #Hyper Parameters
+        self.actions = action_size 
         self.input_size = input_size
-        self.discount_factor = discount_factor  # Discount factor of the MDP
-        self.learning_rate = learning_rate  # Learning rate
+        self.discount_factor = discount_factor  
+        self.learning_rate = learning_rate  
         self.epsilon = epsilon  # Param for exploration
         self.batch_size = batch_size
 
         # Sequential() creates the foundation of the layers.
         self.model = Sequential()
         # First convolutional layer
-         # The first hidden layer convolves 16 8×8 filters
-         # with stride 4 with the input image and applies a rectifier nonlinearity."
+        # The first hidden layer convolves 16 8×8 filters
+        # with stride 4 with the input image and applies a rectifier nonlinearity."
         self.model.add(Conv2D(16, (8, 8), strides=4,
                               activation='softplus',
                               input_shape= input_size))
@@ -65,6 +65,7 @@ class DQN_net:
         '''
 
         state_train = np.zeros((self.batch_size,) + self.input_size)
+        print("foobar",state_train)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
         print(target_train)
         for i_train, experience in enumerate(experience_batch):
@@ -107,9 +108,9 @@ if __name__ == "__main__":
     frame = env.reset()
     state_size = env.observation_space.shape
     #state_size = (84,84,4)
-    print(state_size)
+    print("state size:",state_size)
     action_size = env.action_space.n #Gives a size of 9?!? change to 4!!
-    print(action_size)
+    print("action size:",action_size)
     test_net = DQN_net(state_size, action_size)
 
     # Formatting input shape for first conv2D layer
