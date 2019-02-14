@@ -1,6 +1,8 @@
 """
 This is where we house the functionality for the neural network 
 
+still to be fixed: Action space != 9. 
+
 """
 
 from keras.models import Sequential
@@ -46,7 +48,7 @@ class Neuralnet:
 
     def train(self, experience_batch, target_network, epochs=10):
         """
-        We train the exisiting model with another instance of the same class named target_network
+        We train the exisiting model with another instance of the same class named target_network.
 
         """
         assert type(target_network) == Neuralnet
@@ -80,6 +82,7 @@ class Neuralnet:
 
 if __name__ == "__main__":
     print("==========this is for testing purposes========")
+
     env = gym.make('MsPacman-v0')
     frame = env.reset()
     frame, reward, is_done, _ = env.step(env.action_space.sample())
@@ -94,8 +97,8 @@ if __name__ == "__main__":
     # Predictions
     obs = np.expand_dims(frame, axis=0)
     test_target_predicted = test_net.model.predict(obs)
-    print("Q return on actions:",test_target_predicted)
-    print("pref action index",np.argmax(test_target_predicted))
+    print("Q predictions:",test_target_predicted)
+    print(f"preferrable action-index: {np.argmax(test_target_predicted)} ({max(test_target_predicted[0])})")
     # print(max(test_target_predicted[0]))
 
     print("==================================================")
