@@ -39,7 +39,7 @@ def episode(agent):
         agent.add_experience(state, action, reward, new_state, is_done)
 
         #Network wights update:
-        if len(agent.memory) >= agent.batch_size:
+        if len(agent.memory) >= agent.batch_size*2:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
@@ -59,7 +59,7 @@ def train(num_episodes):
     print('state size =',state_size)
     action_size = env.action_space.n
     DQNAgent = DQN_Agent(state_size, action_size,
-                         batch_size = 500,
+                         batch_size = 32,
                          discount_factor = 0.95,
                          learning_rate = 0.00025,
                          epsilon = 0.2)
@@ -72,8 +72,9 @@ def train(num_episodes):
 
 
 if __name__ == "__main__":
-    num_episodes = 10
+    num_episodes = 1000
     Return_history = train(num_episodes)
     episodes_v = [i for i in range(num_episodes)]
     plt.plot(episodes_v, Return_history, '.')
+    plt.savefig('Boxing_score_vr_episodes_#1000.pdf')
     plt.show()

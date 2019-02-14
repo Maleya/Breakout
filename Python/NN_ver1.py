@@ -94,7 +94,8 @@ class DQN_net:
         self.model.fit(state_train,
                        target_train,
                        batch_size = self.batch_size,
-                       epochs=10)
+                       epochs=1,
+                       verbose=0)
 
 
 #TEST CODE
