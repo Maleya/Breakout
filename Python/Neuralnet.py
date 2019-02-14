@@ -44,8 +44,11 @@ class Neuralnet:
                            metrics=['accuracy'])
 
 
-    def train(self, experience_batch, target_network):
+    def train(self, experience_batch, target_network, epochs=10):
+        """
+        We train the exisiting model with another instance of the same class named target_network
 
+        """
         assert type(target_network) == Neuralnet
         state_train = np.zeros((self.batch_size,) + self.input_size)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
@@ -64,14 +67,16 @@ class Neuralnet:
             output_target_predicted = target_network.model.predict(next_state_train)
             max_q_action = np.argmax(output_target_predicted)
 
-            # apply reward according to is_done.
+            # apply reward according to is_done:
             if is_done == True: 
                 target_train[i][max_q_action] = reward_train
-        
             else:
                 target_train[i_train][max_q_action] = reward_train + \
                                         self.discount_factor * output_target_predicted[0][max_q_action]
                                         # output_target_predicted has shape = (1, 210, 160, 3)
+
+            self.model.fit(state_train, target_train, batch_size=self.batch_size, epochs=epochs)
+
 
 if __name__ == "__main__":
     print("==========this is for testing purposes========")
