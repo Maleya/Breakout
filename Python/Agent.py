@@ -45,12 +45,15 @@ class Agent:
 
 #TEST CODE
 if __name__ == "__main__":
+    print("==========this is for testing purposes========")
+
     env = gym.make('MsPacman-v0')
     frame = env.reset()
     state_size = env.observation_space.shape
     action_size = env.action_space.n #Gives a size of 9?!? change to 4!
     test_agent = Agent(state_size, action_size)
     state = np.expand_dims(frame, axis=0)
+    
     #-----get_action-----
     action = test_agent.get_action(state)
 
@@ -61,3 +64,5 @@ if __name__ == "__main__":
     experience_batch = test_agent.sample_experience()
     #print(experience_batch)
     test_agent.network.train(experience_batch, test_agent.target_network)
+
+    print("==================================================")
