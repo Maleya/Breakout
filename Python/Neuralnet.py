@@ -48,7 +48,7 @@ class Neuralnet:
                            metrics=['accuracy'])
 
 
-    def train(self, experience_batch, target_network, epochs=10):
+    def train(self, experience_batch, target_network, epochs=1):
         """
         We train the exisiting model with another instance of the same class named target_network.
 
@@ -79,7 +79,7 @@ class Neuralnet:
                                         self.discount_factor * output_target_predicted[0][max_q_action]
                                         # output_target_predicted has shape = (1, 210, 160, 3)
 
-            self.model.fit(state_train, target_train, batch_size=self.batch_size, epochs=epochs)
+            self.model.fit(state_train, target_train, batch_size=self.batch_size, epochs=epochs,verbose=0)
 
 
 if __name__ == "__main__":
