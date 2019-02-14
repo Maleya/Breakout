@@ -1,7 +1,9 @@
 """
 This is where we house the functionality for the neural network 
 
-still to be fixed: Action space != 9. 
+still to be fixed: A
+ction space: 9 or 4? 
+Epochs set to default at 10
 
 """
 
