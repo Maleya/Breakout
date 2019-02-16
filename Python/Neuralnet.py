@@ -74,7 +74,7 @@ class Neuralnet:
             if is_done == True: 
                 target_train[i][max_q_action] = reward_train
             else:
-                target_train[i_train][max_q_action] = reward_train + \
+                target_train[i][max_q_action] = reward_train + \
                                         self.discount_factor * output_target_predicted[0][max_q_action]
                                         # output_target_predicted has shape = (1, 210, 160, 3)
 
