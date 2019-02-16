@@ -24,7 +24,9 @@ class Agent:
         self.discount_factor = discount_factor  # Discount factor of the MDP (gamma)
         self.learning_rate = learning_rate
         self.batch_size = batch_size
-
+        self.learning_count = 0
+        self.learning_count_max = 1000
+ 
         self.memory = deque(maxlen=2000)  # Replay Memory for bootstrapping
 
         # Main NN that continuously chooses actions.
@@ -59,6 +61,9 @@ class Agent:
 
     def sample_experience(self):
         return rnd.sample(self.memory, self.batch_size)
+
+    def reset_target_network():
+        
 
 
 # TEST CODE
