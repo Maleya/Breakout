@@ -28,20 +28,20 @@ class DQN_net:
         # The first hidden layer convolves 16 8×8 filters
         # with stride 4 with the input image and applies a rectifier nonlinearity."
         self.model.add(Conv2D(16, (8, 8), strides=4,
-                              activation='softplus',
+                              activation='relu',
                               input_shape= input_size))
 
         # Second convolutional layer
         # The second hidden layer convolves 32 4×4 filters
         # with stride 2, again followed by a rectifier nonlinearity."
         self.model.add(Conv2D(32, (4,4), strides=2,
-                              activation='softplus'))
+                              activation='relu'))
 
         # Flatten the convolution output
         self.model.add(Flatten())
 
         # First dense layer
-        self.model.add(Dense(256, activation='softplus'))
+        self.model.add(Dense(256, activation='relu'))
 
         # Output layer
         self.model.add(Dense(self.actions))
