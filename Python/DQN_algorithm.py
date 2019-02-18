@@ -5,26 +5,33 @@ import gym
 import numpy as np
 import random as rnd
 from collections import deque
-from NN_ver1 import DQN_net
-from pre_process import pre_process
-from DQN_agent_ver1 import DQN_Agent
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
+# Our documents
+from NN_ver1 import DQN_net
+from pre_process import pre_process
+from DQN_agent_ver1 import DQN_Agent
+from stack_frames import stack_frames
 
 env = gym.make('MsPacman-v0')
 
 def episode(agent):
     '''Docstring'''
     Return = 0
-    frame = env.reset()
-    frame = pre_process(frame)
+    initial_frame = env.reset()
+    initial_frame = pre_process(initial_frame)
+    '''
     history_stack = deque(maxlen = 4)
 
     for i in range(4):
         history_stack.append(frame)
     state = np.stack((frame, frame, frame, frame), axis=-1)
     state = np.expand_dims(state, axis=0)
+    '''
+    stacked_frames = stack_frames()
+    state = stacked_frames.create_stack(initial_frame)
+
     is_done = False
     while not is_done:
         #counter += 1
@@ -33,9 +40,12 @@ def episode(agent):
         Return += reward
         #Procecessing images to 4D tensor for the conv_2D input
         new_frame = pre_process(new_frame)
+        new_state = stacked_frames.get_new_state(new_frame)
+        '''
         history_stack.append(new_frame)
         new_state = np.stack((history_stack[0], history_stack[1], history_stack[2], history_stack[3]), axis=-1)
         new_state = np.expand_dims(new_state, axis=0)
+        '''
         agent.add_experience(state, action, reward, new_state, is_done)
 
         #Network wights update:
