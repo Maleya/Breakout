@@ -58,3 +58,4 @@ target/
 
 # Macstuff
 .DS_Store
+/Python/.DS_Store
