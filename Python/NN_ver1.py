@@ -73,6 +73,7 @@ class DQN_net:
             is_done = experience[4]
 
             output_target_pred = target_network.model.predict(next_state_train)
+            #[[12,24,435,5]]
             #print('output_target pred=',output_target_pred)
             #next_q_value_pred = np.max(output_target_pred)
             max_q_action = np.argmax(output_target_pred)
@@ -81,9 +82,9 @@ class DQN_net:
 
             #BEllMAN..?
             if is_done == True:
-                target_train[i_train][max_q_action] = reward_train
+                target_train[i_train][action_train] = reward_train
             else:
-                target_train[i_train][max_q_action] = reward_train + \
+                target_train[i_train][action_train] = reward_train + \
                                         self.discount_factor * output_target_pred[0][max_q_action]
         #Need to do .ravel() / .squeeze()?? on state + target
         #state_train = state_train.ravel()
