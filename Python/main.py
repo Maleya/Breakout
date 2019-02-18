@@ -47,7 +47,7 @@ def episode(learning_Agent):
             learning_Agent.learning_count += 1
             if learning_Agent.learning_count % learning_Agent.learning_count_max == 0:
                 learning_Agent.reset_target_network()
-     
+
         state = new_state
 
     return points
@@ -82,4 +82,3 @@ if __name__ == "__main__":
     plt.plot(episodes_v, Return_history, '.')
     plt.savefig('Boxing_score_vr_episodes_#1000.pdf')
     plt.show()
-

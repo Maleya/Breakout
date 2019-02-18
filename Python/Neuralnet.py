@@ -69,8 +69,8 @@ class Neuralnet:
 
             output_target_predicted = target_network.model.predict(next_state_train)
             target_train[i] = output_target_predicted[0]
-            #max_q_action = np.argmax(output_target_predicted[0])
-            print(f'index for max q-action is {max_q_action}')
+            #max_q_action = np.argmax(output_target_predicted)
+            #print(f'index for max q-action is {max_q_action}')
             #max_target = output_target_predicted[0][max_q_action]
             max_target = np.max(output_target_predicted[0])
 
