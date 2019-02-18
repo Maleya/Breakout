@@ -29,6 +29,7 @@ def episode(learning_Agent):
 
     is_done = False
     while not is_done:
+        env.render()
         action = learning_Agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
         points += reward
