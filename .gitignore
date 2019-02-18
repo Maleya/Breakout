@@ -58,4 +58,7 @@ target/
 
 # Macstuff
 .DS_Store
-/Python/.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
