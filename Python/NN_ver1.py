@@ -61,7 +61,6 @@ class DQN_net:
 
         state_train = np.zeros((self.batch_size,) + self.input_size)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
-        #print('target_train=',target_train)
         for i_train, experience in enumerate(experience_batch):
             # Inputs are the states
             #print('state_train is' + str(experience[0]))
@@ -74,12 +73,15 @@ class DQN_net:
 
             output_target_pred = target_network.model.predict(next_state_train)
             #[[12,24,435,5]]
+            for k,elem in enumerate(output_target_pred[0]):
+                target_train[i_train][k] = elem
             #print('output_target pred=',output_target_pred)
             #next_q_value_pred = np.max(output_target_pred)
-            max_q_action = np.argmax(output_target_pred)
+            max_q_action = np.argmax(output_target_pred[0])
+            #print('index max output_target pred=',max_q_action)
             #print(max_q_action)
             #print(output_target_pred)
-
+            #print('target_train=',target_train)
             #BEllMAN..?
             if is_done == True:
                 target_train[i_train][action_train] = reward_train
