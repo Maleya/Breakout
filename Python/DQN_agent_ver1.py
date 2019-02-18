@@ -11,8 +11,11 @@ class DQN_Agent:
                  batch_size = 1,
                  discount_factor = 0.95,
                  learning_rate = 0.00025,
-                 epsilon = 0.1):
+                 epsilon = 0.1,
+                 video = False):
         #PARAMETERS
+        self.video = video
+        
         self.state_size = state_size
         self.action_size = action_size # should be 4 for pacman
         self.epsilon = epsilon # Exploration rate

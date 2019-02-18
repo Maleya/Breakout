@@ -27,6 +27,9 @@ def episode(agent):
     counter = 0
     is_done = False
     while not is_done:
+        if agent.video == True:
+            env.render()
+
         counter += 1
         action  = agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
@@ -62,7 +65,8 @@ def train(num_episodes):
                          batch_size = 32,
                          discount_factor = 0.95,
                          learning_rate = 0.00025,
-                         epsilon = 0.2)
+                         epsilon = 0.2,
+                         video = True)
     Return_history = []
     for eps in range(num_episodes):
         Return = episode(DQNAgent)
