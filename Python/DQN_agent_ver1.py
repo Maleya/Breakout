@@ -23,7 +23,7 @@ class DQN_Agent:
         self.learning_count = 0
         self.learning_count_max = 1000
         #Replay Memory for bootstrapping
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=100000)
 
         #Neural Networks for the DQN:
         #Main Networks that continuisly choose actions.

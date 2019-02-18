@@ -57,6 +57,7 @@ def train(num_episodes):
     state_size = state.shape
     print('state size =',state_size)
     action_size = env.action_space.n
+    print('action size =', action_size)
     DQNAgent = DQN_Agent(state_size, action_size,
                          batch_size = 32,
                          discount_factor = 0.95,
