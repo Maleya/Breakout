@@ -21,31 +21,20 @@ def episode(agent):
     Return = 0
     initial_frame = env.reset()
     initial_frame = pre_process(initial_frame)
-    '''
-    history_stack = deque(maxlen = 4)
 
-    for i in range(4):
-        history_stack.append(frame)
-    state = np.stack((frame, frame, frame, frame), axis=-1)
-    state = np.expand_dims(state, axis=0)
-    '''
     stacked_frames = stack_frames()
     state = stacked_frames.create_stack(initial_frame)
-
+    counter = 0
     is_done = False
     while not is_done:
-        #counter += 1
+        counter += 1
         action  = agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
         Return += reward
         #Procecessing images to 4D tensor for the conv_2D input
         new_frame = pre_process(new_frame)
         new_state = stacked_frames.get_new_state(new_frame)
-        '''
-        history_stack.append(new_frame)
-        new_state = np.stack((history_stack[0], history_stack[1], history_stack[2], history_stack[3]), axis=-1)
-        new_state = np.expand_dims(new_state, axis=0)
-        '''
+
         agent.add_experience(state, action, reward, new_state, is_done)
 
         #Network wights update:
@@ -56,7 +45,7 @@ def episode(agent):
             if agent.learning_count % agent.learning_count_max == 0:
                 agent.reset_target_network()
         state = new_state
-
+    print(counter)
     return Return
 #counter = 0
 def train(num_episodes):
@@ -82,7 +71,7 @@ def train(num_episodes):
 
 
 if __name__ == "__main__":
-    num_episodes = 1000
+    num_episodes = 10
     Return_history = train(num_episodes)
     episodes_v = [i for i in range(num_episodes)]
     plt.plot(episodes_v, Return_history, '.')

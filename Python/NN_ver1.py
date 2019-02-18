@@ -62,38 +62,27 @@ class DQN_net:
         state_train = np.zeros((self.batch_size,) + self.input_size)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
         for i_train, experience in enumerate(experience_batch):
-            # Inputs are the states
-            #print('state_train is' + str(experience[0]))
-            state_train[i_train] = experience[0]
 
+            state_train[i_train] = experience[0]
             action_train = experience[1]
             reward_train = experience[2]
             next_state_train = experience[3]
             is_done = experience[4]
 
             output_target_pred = target_network.model.predict(next_state_train)
-            #[[12,24,435,5]]
+            #output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
             for k,elem in enumerate(output_target_pred[0]):
                 target_train[i_train][k] = elem
-            #print('output_target pred=',output_target_pred)
+
             #next_q_value_pred = np.max(output_target_pred)
             max_q_action = np.argmax(output_target_pred[0])
-            #print('index max output_target pred=',max_q_action)
-            #print(max_q_action)
-            #print(output_target_pred)
-            #print('target_train=',target_train)
-            #BEllMAN..?
+
             if is_done == True:
                 target_train[i_train][action_train] = reward_train
             else:
                 target_train[i_train][action_train] = reward_train + \
                                         self.discount_factor * output_target_pred[0][max_q_action]
-        #Need to do .ravel() / .squeeze()?? on state + target
-        #state_train = state_train.ravel()
-        #state_train = np.asarray(state_train).squeeze()
-        #target_train = np.asarray(target_train).squeeze()
-        # Train the model for one epoch
-        #print('New target_train' + str(target_train))
+
         self.model.fit(state_train,
                        target_train,
                        batch_size = self.batch_size,
@@ -106,7 +95,6 @@ if __name__ == "__main__":
     env = gym.make('MsPacman-v0')
     frame = env.reset()
     state_size = env.observation_space.shape
-    #state_size = (84,84,4)
     print("state size:",state_size)
     action_size = env.action_space.n #Gives a size of 9?!? change to 4!!
     print("action size:",action_size)
@@ -120,4 +108,3 @@ if __name__ == "__main__":
     #input_tensor = np.stack((frame, frame), axis=1)
     #print(obs)
     target_f = test_net.model.predict(obs)
-    #(1,210,120,3)
