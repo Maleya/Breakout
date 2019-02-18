@@ -4,7 +4,7 @@ import numpy as np
 env = gym.make('MsPacman-v0')
 
 v_reward = []
-for i in range(30):
+for i in range(100):
     # Reset it, returns the starting frame
     frame = env.reset()
     # Render
@@ -19,6 +19,7 @@ for i in range(30):
       # Render
       #env.render()
     v_reward.append(tot_reward)
+    #print(tot_reward)
 
 env.close()
 print(np.mean(v_reward))
