@@ -9,6 +9,7 @@ import numpy as np
 import random as rnd
 from collections import deque
 from Neuralnet import Neuralnet
+env = gym.make('MsPacman-v0')
 
 
 class Agent:
