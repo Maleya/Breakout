@@ -1,8 +1,8 @@
 """
-This is where we house the functionality for the neural network 
+This is where we house the functionality for the neural network
 
 still to be fixed:
-Action space: 9 or 4? 
+Action space: 9 or 4?
 
 """
 
@@ -68,16 +68,23 @@ class Neuralnet:
             is_done = experience[4]
 
             output_target_predicted = target_network.model.predict(next_state_train)
-            max_q_action = np.argmax(output_target_predicted)
+            target_train[i] = output_target_predicted[0]
+            #max_q_action = np.argmax(output_target_predicted[0])
+            print(f'index for max q-action is {max_q_action}')
+            #max_target = output_target_predicted[0][max_q_action]
+            max_target = np.max(output_target_predicted[0])
 
             # apply reward according to is_done:
-            if is_done == True: 
-                target_train[i][max_q_action] = reward_train
+            if is_done == True:
+                target_train[i][action_train] = reward_train
             else:
-                target_train[i][max_q_action] = reward_train + \
-                                        self.discount_factor * output_target_predicted[0][max_q_action]
+                target_train[i][action_train] = reward_train + \
+                                        self.discount_factor * max_target
 
-            self.model.fit(state_train, target_train, batch_size=self.batch_size, epochs=epochs,verbose=0)
+            self.model.fit(state_train,
+                           target_train,
+                           batch_size=self.batch_size,
+                           epochs=epochs,verbose=0)
 
 
 if __name__ == "__main__":
@@ -102,4 +109,3 @@ if __name__ == "__main__":
     # print(max(test_target_predicted[0]))
 
     print("==================================================")
-
