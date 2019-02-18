@@ -40,15 +40,16 @@ def episode(learning_Agent):
         new_state = np.expand_dims(new_state, axis=0)
         learning_Agent.add_experience(state, action, reward, new_state, is_done)
 
-        # update network weights:
-        if len(agent.memory) >= agent.batch_size*2:
-                    experience_batch = learning_agent.sample_experience()
-                    learning_agent.network.train(experience_batch, learning_agent.target_network)
-                    learning_agent.learning_count += 1
-                    if learning_agent.learning_count % learning_agent.learning_count_max == 0:
-                        learning_agent.reset_target_network()
-                state = new_state
+        # update network weights: (and reset them when needed)
+        if len(agent.memory) >= learning_Agent.batch_size*2:
+            experience_batch = learning_Agent.sample_experience()
+            learning_Agent.network.train(experience_batch, learning_Agent.target_network)
+            learning_Agent.learning_count += 1
+            if learning_Agent.learning_count % learning_Agent.learning_count_max == 0:
+                learning_Agent.reset_target_network()
+       
+        state = new_state
 
-            return Return
+    return points
 
 

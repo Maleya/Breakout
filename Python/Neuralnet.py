@@ -2,7 +2,7 @@
 This is where we house the functionality for the neural network 
 
 still to be fixed:
-ction space: 9 or 4? 
+Action space: 9 or 4? 
 
 """
 
@@ -76,7 +76,6 @@ class Neuralnet:
             else:
                 target_train[i][max_q_action] = reward_train + \
                                         self.discount_factor * output_target_predicted[0][max_q_action]
-                                        # output_target_predicted has shape = (1, 210, 160, 3)
 
             self.model.fit(state_train, target_train, batch_size=self.batch_size, epochs=epochs,verbose=0)
 

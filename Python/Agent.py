@@ -62,8 +62,11 @@ class Agent:
     def sample_experience(self):
         return rnd.sample(self.memory, self.batch_size)
 
-    def reset_target_network():
-        
+    def reset_target_network(self):
+        """
+        Updates the target_network with weights of the main NN.
+        """
+        self.target_network.model.set_weights(self.network.model.get_weights())
 
 
 # TEST CODE
