@@ -13,15 +13,15 @@ from NN_ver1 import DQN_net
 from pre_process import pre_process
 from DQN_agent_ver1 import DQN_Agent
 from stack_frames import stack_frames
-
-env = gym.make('MsPacman-v0')
+from preprocess_BO import pre_process_BO
+env = gym.make('Breakout-v0')
 
 def episode(agent):
     '''Docstring'''
     Return = 0
     initial_frame = env.reset()
-    initial_frame = pre_process(initial_frame)
-
+    #initial_frame = pre_process(initial_frame) #MsPacman
+    initial_frame = pre_process_BO(initial_frame) #Breakout
     stacked_frames = stack_frames()
     state = stacked_frames.create_stack(initial_frame)
     counter = 0
@@ -35,7 +35,8 @@ def episode(agent):
         new_frame, reward, is_done, _ = env.step(action)
         Return += reward
         #Procecessing images to 4D tensor for the conv_2D input
-        new_frame = pre_process(new_frame)
+        #new_frame = pre_process(new_frame) # MsPacman
+        new_frame = pre_process_BO(new_frame) #Breakout
         new_state = stacked_frames.get_new_state(new_frame)
 
         agent.add_experience(state, action, reward, new_state, is_done)
@@ -48,13 +49,14 @@ def episode(agent):
             if agent.learning_count % agent.learning_count_max == 0:
                 agent.reset_target_network()
         state = new_state
+    if agent.video == True:
     print(counter)
     return Return
 #counter = 0
 def train(num_episodes):
     '''Docstring'''
     frame = env.reset()
-    frame = pre_process(frame)
+    frame = pre_process_BO(frame)
     state = np.stack((frame, frame, frame, frame), axis=-1)
     #state = frame
     state_size = state.shape
@@ -72,6 +74,7 @@ def train(num_episodes):
         Return = episode(DQNAgent)
         Return_history.append(Return)
         print('Return for episode:',eps,'is:',Return)
+
     return Return_history
 
 
@@ -79,6 +82,7 @@ if __name__ == "__main__":
     num_episodes = 10
     Return_history = train(num_episodes)
     episodes_v = [i for i in range(num_episodes)]
+    env.close()
     plt.plot(episodes_v, Return_history, '.')
-    plt.savefig('Boxing_score_vr_episodes_#1000.pdf')
+    plt.savefig('Breakout_score_vr_episodes_#500.pdf')
     plt.show()

@@ -4,7 +4,7 @@ import numpy as np
 import random as rnd
 from collections import deque
 from NN_ver1 import DQN_net
-env = gym.make('MsPacman-v0')
+env = gym.make('Breakout-v0')
 
 class DQN_Agent:
     def __init__(self, state_size, action_size,
@@ -15,7 +15,7 @@ class DQN_Agent:
                  video = False):
         #PARAMETERS
         self.video = video
-        
+
         self.state_size = state_size
         self.action_size = action_size # should be 4 for pacman
         self.epsilon = epsilon # Exploration rate
