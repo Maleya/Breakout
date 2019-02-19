@@ -49,8 +49,8 @@ def episode(agent):
             if agent.learning_count % agent.learning_count_max == 0:
                 agent.reset_target_network()
         state = new_state
-    if agent.video == True:
     print(counter)
+
     return Return
 #counter = 0
 def train(num_episodes):
@@ -67,7 +67,7 @@ def train(num_episodes):
                          batch_size = 32,
                          discount_factor = 0.95,
                          learning_rate = 0.00025,
-                         epsilon = 0.2,
+                         epsilon = 0.9,
                          video = True)
     Return_history = []
     for eps in range(num_episodes):
@@ -79,7 +79,7 @@ def train(num_episodes):
 
 
 if __name__ == "__main__":
-    num_episodes = 10
+    num_episodes = 1
     Return_history = train(num_episodes)
     episodes_v = [i for i in range(num_episodes)]
     env.close()

@@ -70,18 +70,20 @@ class DQN_net:
             is_done = experience[4]
 
             output_target_pred = target_network.model.predict(next_state_train)
+            output_current_state = self.model.predict(state_train)
+
             #output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
-            for k,elem in enumerate(output_target_pred[0]):
+            for k,elem in enumerate(output_current_state[0]):
                 target_train[i_train][k] = elem
 
-            #next_q_value_pred = np.max(output_target_pred)
-            max_q_action = np.argmax(output_target_pred[0])
+            max_q_value_pred = np.max(output_target_pred[0])
+            #max_q_action = np.argmax(output_target_pred[0])
 
             if is_done == True:
                 target_train[i_train][action_train] = reward_train
             else:
                 target_train[i_train][action_train] = reward_train + \
-                                        self.discount_factor * output_target_pred[0][max_q_action]
+                                        self.discount_factor * max_q_value_pred #output_target_pred[0][max_q_action]
 
         self.model.fit(state_train,
                        target_train,
