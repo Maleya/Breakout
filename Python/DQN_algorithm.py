@@ -53,7 +53,7 @@ def episode(agent):
 
     return Return
 #counter = 0
-def train(num_episodes):
+def training(num_episodes):
     '''Docstring'''
     frame = env.reset()
     frame = pre_process_BO(frame)
@@ -80,7 +80,7 @@ def train(num_episodes):
 
 if __name__ == "__main__":
     num_episodes = 1
-    Return_history = train(num_episodes)
+    Return_history = training(num_episodes)
     episodes_v = [i for i in range(num_episodes)]
     env.close()
     plt.plot(episodes_v, Return_history, '.')
