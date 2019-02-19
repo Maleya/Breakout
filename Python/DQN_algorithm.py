@@ -42,18 +42,26 @@ def episode(agent):
         agent.add_experience(state, action, reward, new_state, is_done)
 
         #Network wights update:
-        if len(agent.memory) >= agent.batch_size*2:
+        if len(agent.memory) >= agent.batch_size*500:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
             if agent.learning_count % agent.learning_count_max == 0:
                 agent.reset_target_network()
-        state = new_state
-    print(counter)
 
+            if agent.epsilon > agent.min_epsilon:
+                agent.epsilon *= agent.epsilon_decay
+        state = new_state
+
+    #----PRINTS FOR TESTING ----------------------
+    print(f'number of steps in episode = {counter}')
+    print(f'epsilon = {agent.epsilon}')
+
+    #---------------------------------------------
     return Return
-#counter = 0
-def training(num_episodes):
+
+
+def training(num_learning_episodes):
     '''Docstring'''
     frame = env.reset()
     frame = pre_process_BO(frame)
@@ -67,22 +75,32 @@ def training(num_episodes):
                          batch_size = 32,
                          discount_factor = 0.95,
                          learning_rate = 0.00025,
-                         epsilon = 0.9,
-                         video = True)
+                         epsilon=1,
+                         epsilon_decrease_rate=0.9999,
+                         min_epsilon=0.1,
+                         video = False,
+                         epsilon_linear = True)
+    mean_history = []
     Return_history = []
-    for eps in range(num_episodes):
+    #for eps in range(num_episodes):
+    episode_count = 0
+    while DQNAgent.learning_count < num_learning_episodes:
+        episode_count += 1
         Return = episode(DQNAgent)
-        Return_history.append(Return)
-        print('Return for episode:',eps,'is:',Return)
+        mean_history.append(Return)
+        if episode_count%100 == 0:
+            Return_history.append(np.mean(mean_history))
+        print('Return for episode:',episode_count,'is:',Return)
 
     return Return_history
 
 
 if __name__ == "__main__":
-    num_episodes = 1
-    Return_history = training(num_episodes)
-    episodes_v = [i for i in range(num_episodes)]
+    num_episodes = 1000
+    num_learning_episodes = 1000
+    Return_history = training(num_learning_episodes)
+    episodes_v = [i for i in range(int(len(Return_history)))]
     env.close()
     plt.plot(episodes_v, Return_history, '.')
-    plt.savefig('Breakout_score_vr_episodes_#500.pdf')
+    plt.savefig('Breakout_score_vr_epochs_#100.pdf')
     plt.show()

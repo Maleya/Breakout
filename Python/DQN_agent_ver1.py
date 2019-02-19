@@ -11,14 +11,20 @@ class DQN_Agent:
                  batch_size = 1,
                  discount_factor = 0.95,
                  learning_rate = 0.00025,
-                 epsilon = 0.1,
-                 video = False):
+                 epsilon=1,
+                 epsilon_decrease_rate=0.99,
+                 min_epsilon=0.1,
+                 video = False,
+                 epsilon_linear = True):
         #PARAMETERS
         self.video = video
 
         self.state_size = state_size
         self.action_size = action_size # should be 4 for pacman
         self.epsilon = epsilon # Exploration rate
+        self.epsilon_decay = epsilon_decrease_rate
+        self.min_epsilon = min_epsilon
+
         self.discount_factor = discount_factor  # Discount factor of the MDP (gamma)
         self.learning_rate = learning_rate  # Learning rate (alpha)
         self.batch_size = batch_size
@@ -33,15 +39,13 @@ class DQN_Agent:
         self.network = DQN_net(self.state_size, self.action_size,
                      batch_size = self.batch_size,
                      discount_factor = self.discount_factor,
-                     learning_rate = self.learning_rate,
-                     epsilon = self.epsilon)
+                     learning_rate = self.learning_rate)
 
         #Network to predict target in training algorithm
         self.target_network = DQN_net(self.state_size, self.action_size,
                      batch_size = self.batch_size,
                      discount_factor = self.discount_factor,
-                     learning_rate = self.learning_rate,
-                     epsilon = self.epsilon)
+                     learning_rate = self.learning_rate)
 
     def add_experience(self, state, action, reward, next_state, done):
         '''If len(memory) = maxlen it will pop the oldest data from left

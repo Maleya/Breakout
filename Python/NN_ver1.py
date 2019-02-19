@@ -12,14 +12,12 @@ class DQN_net:
     def __init__(self, input_size, action_size,
                  batch_size = 32,
                  discount_factor = 0.95,
-                 learning_rate = 0.00025,
-                 epsilon = 0.1):
+                 learning_rate = 0.00025):
         #Hyper Parameters
         self.actions = action_size
         self.input_size = input_size
         self.discount_factor = discount_factor
         self.learning_rate = learning_rate
-        self.epsilon = epsilon  # Param for exploration
         self.batch_size = batch_size
 
         # Sequential() creates the foundation of the layers.
