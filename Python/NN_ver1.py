@@ -4,8 +4,6 @@ from keras.models import Sequential
 from keras.layers import Conv2D, Flatten, Dense
 import gym
 import numpy as np
-import random
-
 
 
 class DQN_net:
@@ -13,7 +11,7 @@ class DQN_net:
                  batch_size = 32,
                  discount_factor = 0.95,
                  learning_rate = 0.00025):
-        #Hyper Parameters
+        # Hyper Parameters
         self.actions = action_size
         self.input_size = input_size
         self.discount_factor = discount_factor
@@ -22,29 +20,16 @@ class DQN_net:
 
         # Sequential() creates the foundation of the layers.
         self.model = Sequential()
-        # First convolutional layer
-        # The first hidden layer convolves 16 8×8 filters
-        # with stride 4 with the input image and applies a rectifier nonlinearity."
         self.model.add(Conv2D(16, (8, 8), strides=4,
                               activation='relu',
                               input_shape= input_size))
 
-        # Second convolutional layer
         # The second hidden layer convolves 32 4×4 filters
-        # with stride 2, again followed by a rectifier nonlinearity."
-        self.model.add(Conv2D(32, (4,4), strides=2,
+        self.model.add(Conv2D(32, (4, 4), strides=2,
                               activation='relu'))
-
-        # Flatten the convolution output
         self.model.add(Flatten())
-
-        # First dense layer
         self.model.add(Dense(256, activation='relu'))
-
-        # Output layer
         self.model.add(Dense(self.actions))
-
-        # Create the model based on the information above
         self.model.compile(loss='mean_squared_error',
                            optimizer='rmsprop',
                            metrics=['accuracy'])
@@ -56,12 +41,12 @@ class DQN_net:
         -target_network is a DQN_net instance to generate target according
         to the DQN algorithm.
         '''
-
+        assert type(target_network) == DQN_net
         state_train = np.zeros((self.batch_size,) + self.input_size)
         target_train = np.zeros((self.batch_size,) + (self.actions,))
-        for i_train, experience in enumerate(experience_batch):
+        for i, experience in enumerate(experience_batch):
 
-            state_train[i_train] = experience[0]
+            state_train[i] = experience[0]
             action_train = experience[1]
             reward_train = experience[2]
             next_state_train = experience[3]
@@ -70,27 +55,27 @@ class DQN_net:
             output_target_pred = target_network.model.predict(next_state_train)
             output_current_state = self.model.predict(state_train)
 
-            #output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
-            for k,elem in enumerate(output_current_state[0]):
-                target_train[i_train][k] = elem
+            # output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
+            for k, elem in enumerate(output_current_state[0]):
+                target_train[i][k] = elem
 
             max_q_value_pred = np.max(output_target_pred[0])
-            #max_q_action = np.argmax(output_target_pred[0])
+            # max_q_action = np.argmax(output_target_pred[0])
 
-            if is_done == True:
-                target_train[i_train][action_train] = reward_train
+            if is_done is True:
+                target_train[i][action_train] = reward_train
             else:
-                target_train[i_train][action_train] = reward_train + \
-                                        self.discount_factor * max_q_value_pred #output_target_pred[0][max_q_action]
+                target_train[i][action_train] = reward_train + \
+                                        self.discount_factor * max_q_value_pred  # output_target_pred[0][max_q_action]
 
         self.model.fit(state_train,
                        target_train,
-                       batch_size = self.batch_size,
+                       batch_size=self.batch_size,
                        epochs=1,
                        verbose=0)
 
 
-#TEST CODE
+# TEST CODE
 if __name__ == "__main__":
     env = gym.make('MsPacman-v0')
     frame = env.reset()
@@ -102,9 +87,9 @@ if __name__ == "__main__":
 
     # Formatting input shape for first conv2D layer
     frame, reward, is_done, _ = env.step(env.action_space.sample())
-    #y = np.reshape(x, (10, 15, 1))
-    #print(frame[1][1][1])
+    # y = np.reshape(x, (10, 15, 1))
+    # print(frame[1][1][1])
     obs = np.expand_dims(frame, axis=0)     # (Formatting issues) Making the observation the first element of a batch of inputs
-    #input_tensor = np.stack((frame, frame), axis=1)
-    #print(obs)
+    # input_tensor = np.stack((frame, frame), axis=1)
+    # print(obs)
     target_f = test_net.model.predict(obs)

@@ -1,9 +1,8 @@
-#import keras
-#from keras.models import Sequential
-#from keras.layers import Conv2D, Flatten, Dense
+# import keras
+# from keras.models import Sequential
+# from keras.layers import Conv2D, Flatten, Dense
 import gym
 import numpy as np
-import random as rnd
 from collections import deque
 import matplotlib
 matplotlib.use("TkAgg")
@@ -16,32 +15,34 @@ from stack_frames import stack_frames
 from preprocess_BO import pre_process_BO
 env = gym.make('Breakout-v0')
 
+
 def episode(agent):
     '''Docstring'''
+    assert type(agent) == DQN_Agent
     Return = 0
     initial_frame = env.reset()
-    #initial_frame = pre_process(initial_frame) #MsPacman
-    initial_frame = pre_process_BO(initial_frame) #Breakout
+    # initial_frame = pre_process(initial_frame) # MsPacman
+    initial_frame = pre_process_BO(initial_frame)  # Breakout
     stacked_frames = stack_frames()
     state = stacked_frames.create_stack(initial_frame)
     counter = 0
     is_done = False
     while not is_done:
-        if agent.video == True:
+        if agent.video is True:
             env.render()
 
         counter += 1
-        action  = agent.get_action(state)
+        action = agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
         Return += reward
-        #Procecessing images to 4D tensor for the conv_2D input
-        #new_frame = pre_process(new_frame) # MsPacman
-        new_frame = pre_process_BO(new_frame) #Breakout
+        # Procecessing images to 4D tensor for the conv_2D input
+        # new_frame = pre_process(new_frame) # MsPacman
+        new_frame = pre_process_BO(new_frame)  # Breakout
         new_state = stacked_frames.get_new_state(new_frame)
 
         agent.add_experience(state, action, reward, new_state, is_done)
 
-        #Network wights update:
+        # Network wights update:
         if len(agent.memory) >= agent.batch_size*500:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
@@ -53,11 +54,11 @@ def episode(agent):
                 agent.epsilon *= agent.epsilon_decay
         state = new_state
 
-    #----PRINTS FOR TESTING ----------------------
+    # ----PRINTS FOR TESTING ----------------------
     print(f'number of steps in episode = {counter}')
     print(f'epsilon = {agent.epsilon}')
 
-    #---------------------------------------------
+    # ---------------------------------------------
     return Return
 
 
@@ -65,10 +66,10 @@ def training(num_learning_episodes):
     '''Docstring'''
     frame = env.reset()
     frame = pre_process_BO(frame)
-    state = np.stack((frame, frame, frame, frame), axis=-1)
-    #state = frame
+    state = np.stack((frame,)*4, axis=-1)
+    # state = frame
     state_size = state.shape
-    print('state size =',state_size)
+    print('state size =', state_size)
     action_size = env.action_space.n
     print('action size =', action_size)
     DQNAgent = DQN_Agent(state_size, action_size,
@@ -88,9 +89,9 @@ def training(num_learning_episodes):
         episode_count += 1
         Return = episode(DQNAgent)
         mean_history.append(Return)
-        if episode_count%100 == 0:
+        if episode_count % 100 == 0:
             Return_history.append(np.mean(mean_history))
-        print('Return for episode:',episode_count,'is:',Return)
+        print('Return for episode:', episode_count, 'is:', Return)
 
     return Return_history
 
