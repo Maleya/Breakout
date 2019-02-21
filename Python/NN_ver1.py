@@ -35,10 +35,14 @@ class DQN_net:
                            metrics=['accuracy'])
 
     def train(self, experience_batch, target_network):
-        ''' Experience_batch is a list of size "batch_size" with elements
-        randomly drawn from the Replay-memory.
-        elements = (state, action, reward, next_state, done)
-        -target_network is a DQN_net instance to generate target according
+        '''
+        EXPERIENCE_BATCH:
+        an element of experieince batch looks like:
+        (state, action, reward, next_state, done)
+        and is a list of size batch_size
+
+        TARGET_NETWORK:
+        target_network is a DQN_net instance to generate target according
         to the DQN algorithm.
         '''
         assert type(target_network) == DQN_net

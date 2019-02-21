@@ -54,6 +54,8 @@ class DQN_Agent:
         self.memory.append((state, action, reward, next_state, done))
 
     def get_action(self, state):
+        """ performs a random action with chance epsilon otherwise
+        returns argmax of the Q values"""
         if np.random.rand() <= self.epsilon:
             # Selects one of the possible actions randomly
             return env.action_space.sample()
