@@ -30,7 +30,7 @@ class stack_frames:
         '''
         Add a new state at the end of the stack.
 
-        Output hace the correct dimensions to be fed into the NN.
+        Output has the correct dimensions to be fed into the NN.
         '''
         self.frame_stack.append(new_frame)
         new_state = np.stack((elem for elem in self.frame_stack),axis=-1)
