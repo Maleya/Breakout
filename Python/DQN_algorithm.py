@@ -3,6 +3,7 @@
 # from keras.layers import Conv2D, Flatten, Dense
 import gym
 import numpy as np
+import time
 from collections import deque
 import matplotlib
 matplotlib.use("TkAgg")
@@ -17,9 +18,12 @@ env = gym.make('Breakout-v0')
 
 
 def episode(agent):
-    '''Docstring'''
+    '''
+    An episode constitues one normal run of a game.
+    Takes an Agent as input.
+    '''
     assert type(agent) == DQN_Agent
-    Return = 0
+    points = 0
     initial_frame = env.reset()
     # initial_frame = pre_process(initial_frame) # MsPacman
     initial_frame = pre_process_BO(initial_frame)  # Breakout
@@ -34,16 +38,15 @@ def episode(agent):
         counter += 1
         action = agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
-        Return += reward
+        points += reward
         # Procecessing images to 4D tensor for the conv_2D input
         # new_frame = pre_process(new_frame) # MsPacman
         new_frame = pre_process_BO(new_frame)  # Breakout
         new_state = stacked_frames.get_new_state(new_frame)
-
         agent.add_experience(state, action, reward, new_state, is_done)
 
-        # Network wights update:
-        if len(agent.memory) >= agent.batch_size*500:
+        # Network weights update: starts after delay.
+        if len(agent.memory) >= agent.batch_size*1:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
@@ -59,7 +62,7 @@ def episode(agent):
     print(f'epsilon = {agent.epsilon}')
 
     # ---------------------------------------------
-    return Return
+    return points
 
 
 def training(num_learning_episodes):
@@ -82,26 +85,27 @@ def training(num_learning_episodes):
                          video = False,
                          epsilon_linear = True)
     mean_history = []
-    Return_history = []
-    #for eps in range(num_episodes):
+    points_history = []
     episode_count = 0
     while DQNAgent.learning_count < num_learning_episodes:
         episode_count += 1
-        Return = episode(DQNAgent)
-        mean_history.append(Return)
+        points = episode(DQNAgent)
+        mean_history.append(points)
         if episode_count % 100 == 0:
-            Return_history.append(np.mean(mean_history))
-        print('Return for episode:', episode_count, 'is:', Return)
+            points_history.append(np.mean(mean_history))
+        print('points for episode:', episode_count, 'is:', points)
 
-    return Return_history
+    return points_history
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     num_episodes = 1000
-    num_learning_episodes = 1000
-    Return_history = training(num_learning_episodes)
-    episodes_v = [i for i in range(int(len(Return_history)))]
+    num_learning_episodes = 5
+    points_history = training(num_learning_episodes)
+    episodes_v = [i for i in range(int(len(points_history)))]
     env.close()
-    plt.plot(episodes_v, Return_history, '.')
-    plt.savefig('Breakout_score_vr_epochs_#100.pdf')
-    plt.show()
+    print("time taken", time.time()-start_time)
+    # plt.plot(episodes_v, points_history, '.')
+    # plt.savefig('Breakout_score_vr_epochs_#100.pdf')
+    # plt.show()
