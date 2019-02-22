@@ -1,6 +1,6 @@
 """
 This runs our main algorithm, and his the highest in the code heirachy import-wise.
-note:
+note: 
 num_learning_iterations starts counting after we filled agent memory with agent.batch_size*[num]
 """
 
