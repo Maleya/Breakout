@@ -1,7 +1,7 @@
 # Neural Network architecture.
 
 from keras.models import Sequential, Input, Model
-from keras.layers import Conv2D, Flatten, Dense, Convolution2D, Lambda, Multiply, convolutional
+from keras.layers import Conv2D, Flatten, Dense, Convolution2D, Lambda, Multiply, convolutional, multiply
 from keras.optimizers import RMSprop
 # import keras
 import gym
@@ -26,26 +26,25 @@ class DQN_net:
             self.action_mask = [1 for i in range(action_size)]
 
         # remove this later
-        ATARI_SHAPE = (4, 105, 80)
-        frames_input = Input(ATARI_SHAPE, name='frames')
+        # ATARI_SHAPE = (105, 80, 4)
+        # frames_input = Input(ATARI_SHAPE, name='frames')
 
 
         # Model:
-        # frames_input = Input(input_size, name='frames')
+        frames_input = Input(input_size, name='frames')
         actions_input = Input((action_size,), name='mask')
         norm_frames = Lambda(lambda x: x / 255.0)(frames_input)
         # print("helpme",norm_frames.shape)
-        norm_frames
         conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size)(norm_frames)
         conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu')(conv_1)
 
         flatten = Flatten()(conv_2)
         dense_1 = Dense(256, activation='relu')(flatten)
         output = Dense(action_size)(dense_1)
+        masked_output = Multiply()([output, actions_input])
+        # masked_output = output
 
-        masked_output = Multiply([output, self.action_mask])
-
-        self.model = Model(input=[frames_input, actions_input], output=masked_output)
+        self.model = Model(inputs=[frames_input, actions_input], outputs=masked_output)
         optimizer = RMSprop(lr=0.00025, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
