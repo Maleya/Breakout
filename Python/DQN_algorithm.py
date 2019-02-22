@@ -107,7 +107,7 @@ def run_training(num_learning_iterations):
         if episode_count % 100 == 0:
             points_history.append(np.mean(mean_history))
         print(f'points for episode {episode_count}: {points}')
-        print(f'total time elapsed: {round(time.time()-start_time,3)} seconds \n')
+        print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(len(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second \n')
 
     return points_history
 
@@ -115,13 +115,13 @@ def run_training(num_learning_iterations):
 if __name__ == "__main__":
     start_time = time.time() 
     # num_episodes = 1000
-    num_learning_iterations = 1000
+    num_learning_iterations = 100
     points_history = run_training(num_learning_iterations)
     episodes_v = [i for i in range(int(len(points_history)))]
     env.close()
 
     total_t = round(time.time()-start_time,3)
     print(f'TOTAL TIME TAKEN: {total_t} seconds')
-    # plt.plot(episodes_v, points_history, '.')
-    # plt.savefig('Breakout_score_vr_epochs_#100.pdf')
-    # plt.show()
+    plt.plot(episodes_v, points_history, '.')
+    plt.savefig('Breakout_score_vr_epochs_#100.pdf')
+    plt.show()
