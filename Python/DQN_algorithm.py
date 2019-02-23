@@ -106,8 +106,8 @@ def run_training(num_learning_iterations):
         if episode_count % 100 == 0:
             points_history.append(np.mean(mean_history))
         print(f'points for episode {episode_count}: {points}')
-        print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(len(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second \n')
-        print(f"learning iteration:{len(DQNAgent.memory)} out of aprx {num_learning_iterations}")
+        print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(len(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
+        print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
     return points_history
 
 
