@@ -3,11 +3,13 @@
 from keras.models import Sequential, Input, Model
 from keras.layers import Conv2D, Flatten, Dense, Convolution2D, Lambda, Multiply, convolutional, multiply
 from keras.optimizers import RMSprop
+from keras.backend import set_image_data_format
 # import keras
 import gym
 import numpy as np
 from os import environ
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow ?
+# set_image_data_format('channels_first')  # very experimental!!
 
 
 class DQN_net:
@@ -23,11 +25,7 @@ class DQN_net:
         self.batch_size = batch_size
         self.action_mask = action_mask
         if action_mask is None:  # for legacy reasons
-            self.action_mask = [1 for i in range(action_size)]
-
-        # remove this later
-        # ATARI_SHAPE = (105, 80, 4)
-        # frames_input = Input(ATARI_SHAPE, name='frames')
+            self.action_mask = np.ones(action_size)
 
 
         # Model:
@@ -42,56 +40,54 @@ class DQN_net:
         dense_1 = Dense(256, activation='relu')(flatten)
         output = Dense(action_size)(dense_1)
         masked_output = Multiply()([output, actions_input])
-        # masked_output = output
 
         self.model = Model(inputs=[frames_input, actions_input], outputs=masked_output)
         optimizer = RMSprop(lr=0.00025, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
+    # def train(self, experience_batch, target_network):
+    #     '''
+    #     EXPERIENCE_BATCH:
+    #     an element of experieince batch looks like:
+    #     (state, action, reward, next_state, done)
+    #     and is a list of size batch_size
 
-    def train(self, experience_batch, target_network):
-        '''
-        EXPERIENCE_BATCH:
-        an element of experieince batch looks like:
-        (state, action, reward, next_state, done)
-        and is a list of size batch_size
+    #     TARGET_NETWORK:
+    #     target_network is a DQN_net instance to generate target according
+    #     to the DQN algorithm.
+    #     '''
+    #     assert type(target_network) == DQN_net
+    #     state_train = np.zeros((self.batch_size,) + self.input_size)
+    #     target_train = np.zeros((self.batch_size,) + (self.actions,))
+    #     for i, experience in enumerate(experience_batch):
 
-        TARGET_NETWORK:
-        target_network is a DQN_net instance to generate target according
-        to the DQN algorithm.
-        '''
-        assert type(target_network) == DQN_net
-        state_train = np.zeros((self.batch_size,) + self.input_size)
-        target_train = np.zeros((self.batch_size,) + (self.actions,))
-        for i, experience in enumerate(experience_batch):
+    #         state_train[i] = experience[0]
+    #         action_train = experience[1]
+    #         reward_train = experience[2]
+    #         next_state_train = experience[3]
+    #         is_done = experience[4]
 
-            state_train[i] = experience[0]
-            action_train = experience[1]
-            reward_train = experience[2]
-            next_state_train = experience[3]
-            is_done = experience[4]
+    #         output_target_pred = target_network.model.predict(next_state_train)
+    #         output_current_state = self.model.predict(state_train)
 
-            output_target_pred = target_network.model.predict(next_state_train)
-            output_current_state = self.model.predict(state_train)
+    #         # output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
+    #         for k, elem in enumerate(output_current_state[0]):
+    #             target_train[i][k] = elem
 
-            # output_target_pred_shape = [[q_action_1, ... ,q_action_n]]
-            for k, elem in enumerate(output_current_state[0]):
-                target_train[i][k] = elem
+    #         max_q_value_pred = np.max(output_target_pred[0])
+    #         # max_q_action = np.argmax(output_target_pred[0])
 
-            max_q_value_pred = np.max(output_target_pred[0])
-            # max_q_action = np.argmax(output_target_pred[0])
+    #         if is_done is True:
+    #             target_train[i][action_train] = reward_train
+    #         else:
+    #             target_train[i][action_train] = reward_train + \
+    #                                     self.discount_factor * max_q_value_pred  # output_target_pred[0][max_q_action]
 
-            if is_done is True:
-                target_train[i][action_train] = reward_train
-            else:
-                target_train[i][action_train] = reward_train + \
-                                        self.discount_factor * max_q_value_pred  # output_target_pred[0][max_q_action]
-
-        self.model.fit(state_train,
-                       target_train,
-                       batch_size=self.batch_size,
-                       epochs=1,
-                       verbose=0)
+        # self.model.fit(state_train,
+    #                    target_train,
+    #                    batch_size=self.batch_size,
+    #                    epochs=1,
+    #                    verbose=0)
 
 
 # TEST CODE
@@ -100,22 +96,54 @@ if __name__ == "__main__":
 
     env = gym.make('Breakout-v0')
     frame = env.reset()
-    frame = pre_process_BO(frame)
-    print("shape",frame.shape)
-    state_size = env.observation_space.shape
-    print("state size:",state_size)
-    action_size = env.action_space.n #Gives a size of 9?!? change to 4!!
-    print("action size:",action_size)
-    test_net = DQN_net(state_size, action_size)
-    # test_net = DQN_net((84, 84), action_size)
+    new_frame, reward, is_done, _ = env.step(env.action_space.sample())
+    new_frame = pre_process_BO(new_frame)
+    state = np.stack((new_frame,)*4, axis=-1)
+    state_size = state.shape
+
+
+
+    action_size = env.action_space.n  # Gives a size of 9?!? change to 4!!
+    print("state size:", state_size)
+    print("action size:", action_size)
+    obs = np.expand_dims(state, axis=0)     # (Formatting issues) Making the observation the first element of a batch of inputs
+    print("obs shape:", obs.shape)
+    test_net = DQN_net(state, action_size)
 
     # print('action mask:',test_net.action_mask)
 
-    # # Formatting input shape for first conv2D layer
-    # frame, reward, is_done, _ = env.step(env.action_space.sample())
-    # # y = np.reshape(x, (10, 15, 1))
-    # # print(frame[1][1][1])
-    # obs = np.expand_dims(frame, axis=0)     # (Formatting issues) Making the observation the first element of a batch of inputs
+    # test = [1 for i in range(action_size)]
+    # predictions
+    # test_target_predicted = test_net.model.predict(state)
+    # print("Q predictions:", test_target_predicted)
+    # print(f"preferrable action-index: {np.argmax(test_target_predicted)} ({max(test_target_predicted[0])})")
+    # ------------------------
+    # new_frame, reward, is_done, _ = env.step(env.action_space.sample())
+
     # # input_tensor = np.stack((frame, frame), axis=1)
-    # # print(obs)
-    # target_f = test_net.model.predict(obs)
+    # target_f = test_net.model.predict([obs, np.ones(action_size)])
+    # # print(target_f)
+
+
+
+# print("==========this is for testing purposes========")
+
+#     env = gym.make('MsPacman-v0')
+#     frame = env.reset()
+#     frame, reward, is_done, _ = env.step(env.action_space.sample())
+
+#     #dimensions
+#     state_size = env.observation_space.shape
+#     action_size = env.action_space.n #Gives a size of 9?!? change to 4!!
+#     print("state size:",state_size)
+#     print("action size:",action_size,)
+#     test_net = Neuralnet(state_size, action_size)
+
+#     # Predictions
+#     obs = np.expand_dims(frame, axis=0)
+#     test_target_predicted = test_net.model.predict(obs)
+#     print("Q predictions:",test_target_predicted)
+#     print(f"preferrable action-index: {np.argmax(test_target_predicted)} ({max(test_target_predicted[0])})")
+#     # print(max(test_target_predicted[0]))
+
+#     print("==================================================")
