@@ -60,7 +60,9 @@ class DQN_Agent:
             # Selects one of the possible actions randomly
             return env.action_space.sample()
 
-        act_values = self.network.model.predict(state)
+        open_mask = np.ones(self.action_size)  # make an open mask
+        open_mask = np.expand_dims(open_mask, axis=0)
+        act_values = self.network.model.predict([state, open_mask])
         # Shape: [ [q_action_1, ..., q_action_n] ]
         # returns index corresponding to chosen action
         return np.argmax(act_values[0])

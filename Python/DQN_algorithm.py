@@ -20,7 +20,6 @@ from DQN_agent_ver1 import DQN_Agent
 from stack_frames import stack_frames
 from preprocess_BO import pre_process_BO
 
-
 env = gym.make('Breakout-v0')
 
 
@@ -115,7 +114,7 @@ def run_training(num_learning_iterations):
 if __name__ == "__main__":
     start_time = time.time() 
     # num_episodes = 1000
-    num_learning_iterations = 100
+    num_learning_iterations = 1000
     points_history = run_training(num_learning_iterations)
     episodes_v = [i for i in range(int(len(points_history)))]
     env.close()
