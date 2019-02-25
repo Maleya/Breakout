@@ -93,10 +93,10 @@ def run_training(num_learning_iterations):
 
     DQNAgent = DQN_Agent(state_size, action_size,
                          batch_size = 32,
-                         discount_factor = 0.95,
+                         discount_factor = 0.99,
                          learning_rate = 0.00025,
                          epsilon=1,
-                         epsilon_decrease_rate=0.9999,
+                         epsilon_decrease_rate=0.9999954, #becomes 0.1 after 500 000 learning iterations
                          min_epsilon=0.1,
                          video = False,
                          epsilon_linear = True)
