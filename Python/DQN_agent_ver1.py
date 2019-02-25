@@ -8,15 +8,15 @@ env = gym.make('Breakout-v0')
 
 class DQN_Agent:
     def __init__(self, state_size, action_size,
-                 batch_size = 1,
-                 discount_factor = 0.95,
-                 learning_rate = 0.00025,
+                 batch_size=1,
+                 discount_factor=0.95,
+                 learning_rate=0.00025,
                  epsilon=1,
                  epsilon_decrease_rate=0.99,
                  min_epsilon=0.1,
-                 video = False,
-                 epsilon_linear = True):
-        #PARAMETERS
+                 video=False,
+                 epsilon_linear=True):
+        # PARAMETERS
         self.video = video
 
         self.state_size = state_size
