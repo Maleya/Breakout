@@ -1,6 +1,6 @@
 """
 This runs our main algorithm, and his the highest in the code heirachy import-wise.
-note: 
+note:
 num_learning_iterations starts counting after we filled agent memory with agent.batch_size*[num]
 """
 
@@ -19,6 +19,8 @@ from pre_process import pre_process
 from DQN_agent_ver1 import DQN_Agent
 from stack_frames import stack_frames
 from preprocess_BO import pre_process_BO
+
+from keras.models import load_model
 
 env = gym.make('Breakout-v0')
 
@@ -56,7 +58,7 @@ def episode(agent):
         agent.add_experience(state, action, reward, new_state, is_done)
 
         # Network weights update: starts after delay.
-        if len(agent.memory) >= agent.batch_size*500:  # sets the learning delay
+        if len(agent.memory) >= agent.batch_size*5:  # sets the learning delay
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
@@ -64,7 +66,7 @@ def episode(agent):
                 agent.reset_target_network()
 
             # decaying epsilon.
-            if agent.epsilon > agent.min_epsilon: 
+            if agent.epsilon > agent.min_epsilon:
                 agent.epsilon *= agent.epsilon_decay
         state = new_state
 
@@ -98,27 +100,28 @@ def run_training(num_learning_iterations):
                          min_epsilon=0.1,
                          video = False,
                          epsilon_linear = True)
-
+    #DQNAgent.network.model.load_weights('saved_weights_run1.h5')
     while DQNAgent.learning_count < num_learning_iterations:
         episode_count += 1
         points = episode(DQNAgent)
         mean_history.append(points)
         if episode_count % 100 == 0:
             points_history.append(np.mean(mean_history))
+            mean_history = []
         print(f'points for episode {episode_count}: {points}')
         print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(len(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
         print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
-    return points_history
+    return points_history, DQNAgent
 
 
 if __name__ == "__main__":
-    start_time = time.time() 
+    start_time = time.time()
     # num_episodes = 1000
-    num_learning_iterations = 10000
-    points_history = run_training(num_learning_iterations)
+    num_learning_iterations = 10
+    points_history, DQNAgent = run_training(num_learning_iterations)
     episodes_v = [i for i in range(int(len(points_history)))]
     env.close()
-
+    DQNAgent.network.model.save_weights('saved_weights_run1.h5')
     total_t = round(time.time()-start_time,3)
     print(f'TOTAL TIME TAKEN: {total_t} seconds')
     plt.plot(episodes_v, points_history, '.')
