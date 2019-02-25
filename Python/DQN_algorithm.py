@@ -3,7 +3,7 @@ This runs our main algorithm, and his the highest in the code heirachy import-wi
 
 note:
 num_learning_iterations starts counting after we filled agent memory with agent.batch_size*[num]
-Before running a fresh run: 
+Before running a fresh run:
     clean out latest_epsilon and plot_data.csv
 """
 import gym
@@ -101,6 +101,7 @@ def run_training(num_learning_iterations):
 
     # LOAD STATES
     DQNAgent.network.model.load_weights('saved_weights_run1.h5')
+    DQNAgent.target_network.model.load_weights('saved_weights_run1.h5')
     with open('latest_epsilon.csv', 'rb') as eps:
         eps = eps.read().decode().strip()
         DQNAgent.epsilon = float(eps)

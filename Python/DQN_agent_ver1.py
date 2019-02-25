@@ -16,7 +16,7 @@ class DQN_Agent:
                  min_epsilon=0.1,
                  video=False,
                  epsilon_linear=True):
-                 
+
         # PARAMETERS
         self.video = video
 
@@ -31,7 +31,7 @@ class DQN_Agent:
         self.batch_size = batch_size
         #  For reseting target network
         self.learning_count = 0
-        self.learning_count_max = 1000
+        self.learning_count_max = 5000
         # Replay Memory for bootstrapping
         self.memory = deque(maxlen=500000)
 
