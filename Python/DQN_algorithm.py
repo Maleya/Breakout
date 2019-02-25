@@ -14,6 +14,7 @@ import matplotlib
 matplotlib.use("TkAgg")  # for mac users
 from matplotlib import pyplot as plt
 from os import environ
+from keras.models import load_model
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
 
 # Our documents
@@ -22,7 +23,6 @@ from pre_process import pre_process
 from DQN_agent_ver1 import DQN_Agent
 from stack_frames import stack_frames
 from preprocess_BO import pre_process_BO
-from keras.models import load_model
 env = gym.make('Breakout-v0')
 
 
