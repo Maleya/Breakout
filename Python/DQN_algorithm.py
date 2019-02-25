@@ -125,5 +125,7 @@ if __name__ == "__main__":
     total_t = round(time.time()-start_time,3)
     print(f'TOTAL TIME TAKEN: {total_t} seconds')
     plt.plot(episodes_v, points_history, '.')
+    plt.xlabel('Number of Played Game Epochs.')
+    plt.ylabel('Average Game Score.')
     plt.savefig('Breakout_score_vr_epochs_#100.pdf')
     plt.show()
