@@ -16,6 +16,7 @@ class DQN_Agent:
                  min_epsilon=0.1,
                  video=False,
                  epsilon_linear=True):
+                 
         # PARAMETERS
         self.video = video
 
