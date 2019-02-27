@@ -21,7 +21,7 @@ def mean_batches(in_list, batch_size):
 # ------------- load the data -------------
 score_list = []
 run_list = []
-with open('plot_data.csv', 'rb') as csvFile:
+with open('plot_data.csv', 'r') as csvFile:
     next(csvFile)
     reader = csv.reader(csvFile)
     for row in reader:
