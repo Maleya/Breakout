@@ -1,0 +1,48 @@
+# if you want to look at the data 
+import matplotlib
+import numpy as np
+import csv
+from matplotlib import pyplot as plt
+# import seaborn as sns
+matplotlib.use("TkAgg")  # for mac users
+
+
+# ------------- Helper functions -------------
+def mean_batches(in_list, batch_size):
+    old_i = 0
+    mean_list = []
+    for i, score in enumerate(in_list):
+        if i % batch_size == 0 and i != 0:
+            mean_list.append(np.mean(in_list[old_i:i]))
+            old_i = i
+    return mean_list
+
+
+# ------------- load the data -------------
+score_list = []
+run_list = []
+with open('plot_data.csv', 'r') as csvFile:
+    next(csvFile)
+    reader = csv.reader(csvFile)
+    for row in reader:
+        run, score = row
+        score_list.append(float(score))
+        run_list.append(float(run))
+
+
+# ------------- plots -------------
+mean_data = mean_batches(score_list, 100)
+x_axis = [i for i in range(len(mean_data))]
+
+# linear regression:
+fit = np.polyfit(x_axis, mean_data, 1)
+fit_fn = np.poly1d(fit)  # takes x returns estimate for y
+
+
+plt.plot(mean_data, '.',label='mean of 100 episodes')
+plt.plot(x_axis, fit_fn(x_axis),label='best fit 1d')
+plt.xlabel('Number of Played Game Epochs')
+plt.ylabel('Average Game Score')
+plt.legend()
+plt.tight_layout()
+plt.show()
