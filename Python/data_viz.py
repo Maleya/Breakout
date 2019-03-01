@@ -37,7 +37,7 @@ x_axis = [i for i in range(len(mean_data))]
 # linear regression:
 fit = np.polyfit(x_axis, mean_data, 1)
 fit_fn = np.poly1d(fit)  # takes x returns estimate for y
-
+print(f'line of best fit: y={fit_fn}')
 print(f"highest score: {max(score_list)}(index:{np.argmax(score_list)}/{len(score_list)}), variance:{np.var(score_list)}")
 plt.plot(mean_data, '.', label='mean of 100 episodes')
 plt.plot(x_axis, fit_fn(x_axis), label='best fit 1d')
