@@ -1,25 +1,23 @@
 import gym
 import numpy as np
 # Create a breakout environment
-env = gym.make('MsPacman-v0')
+env = gym.make('Breakout-v0')
 
 v_reward = []
-for i in range(100):
+for i in range(10000):
     # Reset it, returns the starting frame
     frame = env.reset()
     # Render
     is_done = False
     tot_reward = 0
+    print(f"ep:{i}")
     while not is_done:
 
-      env.render()
-      # Perform a random action, returns the new frame, reward and whether the game is over
-      frame, reward, is_done, _ = env.step(env.action_space.sample())
-      tot_reward += reward
-      # Render
-      #env.render()
+        frame, reward, is_done, _ = env.step(env.action_space.sample())
+        tot_reward += reward
+        #env.render()
     v_reward.append(tot_reward)
     #print(tot_reward)
 
 env.close()
-print(np.mean(v_reward))
+print(np.mean(v_reward), np.var(v_reward))

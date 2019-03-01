@@ -3,6 +3,7 @@ import matplotlib
 import numpy as np
 import csv
 from matplotlib import pyplot as plt
+import matplotlib
 # import seaborn as sns
 matplotlib.use("TkAgg")  # for mac users
 
@@ -41,6 +42,7 @@ print(f'line of best fit: y={fit_fn}')
 print(f"highest score: {max(score_list)}(index:{np.argmax(score_list)}/{len(score_list)}), variance:{np.var(score_list)}")
 plt.plot(mean_data, '.', label='mean of 100 episodes')
 plt.plot(x_axis, fit_fn(x_axis), label='best fit 1d')
+plt.axhline(y=1.3217, alpha=0.3, label="mean random agent score (10000 eps)")
 plt.xlabel('Number of Played Game Epochs')
 plt.ylabel('Average Game Score')
 plt.legend()
