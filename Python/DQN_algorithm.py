@@ -101,7 +101,8 @@ def run_training(num_learning_iterations):
 
     # LOAD STATES
     DQNAgent.network.model.load_weights('saved_weights_run1.h5')
-    DQNAgent.target_network.model.load_weights('saved_weights_run1.h5')
+    DQNAgent.target_network.model.load_weights('target_saved_weights_run1.h5')
+
     with open('latest_epsilon.csv', 'rb') as eps:
         eps = eps.read().decode().strip()
         DQNAgent.epsilon = float(eps)
@@ -130,12 +131,13 @@ def run_training(num_learning_iterations):
 
 if __name__ == "__main__":
     start_time = time.time()
-    num_learning_iterations = 450000
+    num_learning_iterations = 100
     points_history, DQNAgent = run_training(num_learning_iterations)
     env.close()
 
     # SAVE STATES
     DQNAgent.network.model.save_weights('saved_weights_run1.h5')
+    DQNAgent.target_network.model.save_weights('target_saved_weights_run1.h5')
     with open('latest_epsilon.csv', 'w', newline='') as csvFile:
         writer = csv.writer(csvFile)
         writer.writerow([DQNAgent.epsilon])
