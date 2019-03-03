@@ -23,4 +23,5 @@ if __name__ == "__main__":
     frame, reward, done, _, = env.step(env.action_space.sample())
     env.close()
     output = pre_process_BO(frame)
+    print(output)
     print(f"input shape: {frame.shape}, output shape: {output.shape}")
