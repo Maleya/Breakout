@@ -131,7 +131,7 @@ def run_training(num_learning_iterations):
 
 if __name__ == "__main__":
     start_time = time.time()
-    num_learning_iterations = 150000
+    num_learning_iterations = 600000
     points_history, DQNAgent = run_training(num_learning_iterations)
     env.close()
 

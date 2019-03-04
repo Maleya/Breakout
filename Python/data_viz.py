@@ -1,11 +1,11 @@
-# if you want to look at the data 
+# if you want to look at the data
 import matplotlib
+matplotlib.use("TkAgg")  # for mac users
+
 import numpy as np
 import csv
 from matplotlib import pyplot as plt
-import matplotlib
-# import seaborn as sns
-matplotlib.use("TkAgg")  # for mac users
+
 
 
 # ------------- Helper functions -------------
