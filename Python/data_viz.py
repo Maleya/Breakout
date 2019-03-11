@@ -34,7 +34,7 @@ with open('plot_data.csv', 'r') as csvFile:
 
 
 # ------------- plots -------------
-mean_data = mean_batches(score_list, 100)
+mean_data = mean_batches(score_list, 125)
 x_axis = [i for i in range(len(mean_data))]
 
 # linear regression:
@@ -42,10 +42,10 @@ fit = np.polyfit(x_axis, mean_data, 1)
 fit_fn = np.poly1d(fit)  # takes x returns estimate for y
 print(f'line of best fit: y={fit_fn}')
 print(f"highest score: {max(score_list)}(index:{np.argmax(score_list)}/{len(score_list)}), variance:{np.var(score_list)}")
-plt.plot(mean_data, '.', label='mean of 100 episodes')
+plt.plot(mean_data, '.', label='mean of 125 episodes')
 plt.plot(x_axis, fit_fn(x_axis), label=f'best fit 1d: {fit_fn}')
 plt.axhline(y=1.3217, alpha=0.3, label="mean random agent score (10000 episodes)")
-plt.xlabel('Number of played episodes [/100]')
+plt.xlabel('Number of played epochs [1 epoch aprox = 125 episodes]')
 plt.ylabel('Mean episode score')
 plt.title('Mean game score as function of episodes played')
 plt.legend()
