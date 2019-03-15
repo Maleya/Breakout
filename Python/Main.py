@@ -141,7 +141,7 @@ def run_training(num_learning_iterations):
         episode_count += 1
         mean_history.append(points)
         row = [episode_count, points]
-        with open('plot_data.csv', 'a', newline='') as csvFile:
+        with open('./data/plot_data.csv', 'a', newline='') as csvFile:
             writer = csv.writer(csvFile)
             writer.writerow(row)
         if episode_count % 100 == 0:
