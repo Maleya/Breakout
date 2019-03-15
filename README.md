@@ -4,6 +4,44 @@ Learning to play Breakout through reinforcement learning, implementing the DQN a
 
 
 
+## Changes and todo lists
+
+Here is a little list of things we plan to implement 
+
+#### Code improvements
+
+- [ ] Clean up file hierarchy with folders: Helper functions, data 
+
+- [ ] preprocess fn: remove the walls
+
+- [ ] only learn every 4th frame
+
+- [ ] change to *breakout_v4* and or *deterministic* version. 
+
+- [ ] Replay memory implemented in numpy (ints and zipping)
+
+- [ ] numba.jit use investigated
+
+- [ ] slower epsilon greedy decay
+
+- [ ] check if files to be loaded exist
+
+- [ ] track learning iterations over runs 
+
+  
+
+#### Data gathering & plots
+
+- [ ] sample 2000 states and document the average of the $q_{max}$ over all those states. save into csv 
+
+- [ ] box plots added
+
+- [ ] average q plotted
+
+- [ ] data gathered indexed by learning iterations not episodes 
+
+  
+
 ## File structure
 
 The main algorithm is started from **DQN_algorithm.py** which in turn loads a few helper files.
@@ -21,3 +59,6 @@ To be filled in soon.
 Martti Yap
 
 Gabriel Andersson
+
+
+
