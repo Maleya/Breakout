@@ -1,4 +1,4 @@
-# RBreakout
+# Breakout-v4
 
 Learning to play Breakout through reinforcement learning, implementing the DQN algorithm described in the article '[Playing Atari with Deep Reinforcement Learning](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)'.  *This is still very much a work in progress* 
 
@@ -16,15 +16,17 @@ Here is a little list of things we plan to implement
 
 - [ ] only learn every 4th frame
 
-- [ ] change to *breakout_v4* and or *deterministic* version. 
+- [x] change game-mode to *breakout_v4*? [Slower??]
 
-- [ ] Replay memory implemented in numpy (ints and zipping)
+- [ ] investigate game-mode  *deterministic* version?
+
+- [ ] Replay memory class implemented in numpy (ints and zipping)
 
 - [ ] numba.jit use investigated
 
 - [ ] slower epsilon greedy decay
 
-- [ ] check if files to be loaded exist
+- [x] check if files to be loaded exist
 
 - [ ] track learning iterations over runs 
 

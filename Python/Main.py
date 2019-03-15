@@ -22,12 +22,15 @@ matplotlib.use("TkAgg")  # for mac users
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
 env = gym.make('Breakout-v4')
 
-# PARAMETERS --------------------------------------------------
+
+# SETTINGS & PARAMETERS --------------------------------------------------
 saved_NN_weights = "saved_weights_run1.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_run1.h5"
 saved_epsilon = "latest_epsilon.csv"
 
-num_learning_iterations = 50
+num_learning_iterations = 1000
+learning_delay = 50000
+
 
 
 
@@ -42,8 +45,7 @@ def episode(agent):
 
     # PREP A FRAME
     initial_frame = env.reset()
-    # initial_frame = pre_process(initial_frame) # MsPacman
-    initial_frame = preprocess(initial_frame)  # Breakout
+    initial_frame = preprocess(initial_frame)
     stacked_frames = stack_frames()
     state = stacked_frames.create_stack(initial_frame)
     is_done = False
@@ -58,13 +60,13 @@ def episode(agent):
         new_frame, reward, is_done, _ = env.step(action)
         points += reward
         # Procecessing images to 4D tensor for the conv_2D input
-        # new_frame = pre_process(new_frame) # MsPacman
         new_frame = preprocess(new_frame)  # Breakout
         new_state = stacked_frames.get_new_state(new_frame)
         agent.add_experience(state, action, reward, new_state, is_done)
 
         # Network weights update: starts after delay.
-        if len(agent.memory) >= 50000:  # sets the learning delay
+        mem_len = len(agent.memory)
+        if mem_len >= learning_delay and mem_len % 4 == 0:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
@@ -112,7 +114,6 @@ def run_training(num_learning_iterations):
     else:
         print(f"IMPORT WARNING: '{saved_NN_weights}' was not found!")
         print('starting fresh...')
-        # exit()  # will remove this later qq
 
     if path.isfile(f'./data/{saved_NN_target_weights}'):
         DQNAgent.target_network.model.load_weights(f'./data/{saved_NN_target_weights}')
@@ -121,16 +122,16 @@ def run_training(num_learning_iterations):
     else:
         print(f"IMPORT WARNING: '{saved_NN_target_weights}' was not found!")
         print('starting fresh...')
-        # exit()  # will remove this later qq
 
     if path.isfile(f'./data/{saved_epsilon}'):
         with open(f'./data/{saved_epsilon}', 'rb') as eps:
             eps = eps.read().decode().strip()
             DQNAgent.epsilon = float(eps)
         print(f"{saved_epsilon} loaded successfully!")
+
     else:
         print(f'IMPORT WARNING: {saved_epsilon} was not found!')
-        # exit()
+    print("\n\n")
 
     # named section  ---------------------------------------------------------------------
     while DQNAgent.learning_count < num_learning_iterations:
