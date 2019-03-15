@@ -1,14 +1,9 @@
 # if you want to look at the data
 import matplotlib
-matplotlib.use("TkAgg")  # for mac users
-
 import numpy as np
 import csv
 from matplotlib import pyplot as plt
-
-# skoja lite.
-# import antigravity
-# plt.xkcd()
+matplotlib.use("TkAgg")  # for mac users
 
 # ------------- Helper functions -------------
 def mean_batches(in_list, batch_size):

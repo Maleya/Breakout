@@ -13,8 +13,8 @@ import csv
 import matplotlib
 from matplotlib import pyplot as plt
 from os import environ, path
-from keras.models import load_model
-from NeuralNet import DQN_net
+# from keras.models import load_model
+# from NeuralNet import DQN_net
 from Agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
@@ -30,8 +30,6 @@ saved_epsilon = "latest_epsilon.csv"
 
 num_learning_iterations = 1000
 learning_delay = 50000
-
-
 
 
 def episode(agent):
@@ -178,5 +176,5 @@ if __name__ == "__main__":
     plt.plot(episodes_v, points_history, '.')
     plt.xlabel('Number of Played Game Epochs.')
     plt.ylabel('Average Game Score.')
-    plt.savefig('Breakout_score_vr_epochs_#100.pdf')
+    plt.savefig('./data/Breakout_score_vr_epochs_#100.pdf')
     plt.show()
