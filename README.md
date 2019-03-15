@@ -1,4 +1,4 @@
-# Breakout
+# RBreakout
 
 Learning to play Breakout through reinforcement learning, implementing the DQN algorithm described in the article '[Playing Atari with Deep Reinforcement Learning](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)'.  *This is still very much a work in progress* 
 
@@ -10,9 +10,9 @@ Here is a little list of things we plan to implement
 
 #### Code improvements
 
-- [ ] Clean up file hierarchy with folders: Helper functions, data 
+- [x] Renamed files to remove versioning + todo list. 
 
-- [ ] preprocess fn: remove the walls
+- [x] preprocess fn: remove the walls
 
 - [ ] only learn every 4th frame
 
@@ -30,9 +30,11 @@ Here is a little list of things we plan to implement
 
   
 
-#### Data gathering & plots
+#### Data management & plots
 
-- [ ] sample 2000 states and document the average of the $q_{max}$ over all those states. save into csv 
+- [x] data folder with checks in place 
+
+- [ ] restructure what we save: sample 2000 states and document the average of the $q_{max}$ over all those states. save into csv 
 
 - [ ] box plots added
 
@@ -42,7 +44,7 @@ Here is a little list of things we plan to implement
 
   
 
-## File structure
+## File structure (outdated)
 
 The main algorithm is started from **DQN_algorithm.py** which in turn loads a few helper files.
 

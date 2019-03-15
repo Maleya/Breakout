@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 # Create a breakout environment
-env = gym.make('Breakout-v0')
+env = gym.make('Breakout-v4')
 
 v_reward = []
 for i in range(10000):

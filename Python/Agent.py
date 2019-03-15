@@ -3,7 +3,7 @@ import numpy as np
 import random as rnd
 from collections import deque
 from NeuralNet import DQN_net
-env = gym.make('Breakout-v0')
+env = gym.make('Breakout-v4')
 
 
 class DQN_Agent:

@@ -20,12 +20,15 @@ from stack_frames import stack_frames
 from preprocess import preprocess
 matplotlib.use("TkAgg")  # for mac users
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
-env = gym.make('Breakout-v0')
+env = gym.make('Breakout-v4')
 
-# SAVE FILE PARAMETERS
+# PARAMETERS --------------------------------------------------
 saved_NN_weights = "saved_weights_run1.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_run1.h5"
 saved_epsilon = "latest_epsilon.csv"
+
+num_learning_iterations = 50
+
 
 
 def episode(agent):
@@ -109,7 +112,7 @@ def run_training(num_learning_iterations):
     else:
         print(f"IMPORT WARNING: '{saved_NN_weights}' was not found!")
         print('starting fresh...')
-        exit()  # will remove this later qq
+        # exit()  # will remove this later qq
 
     if path.isfile(f'./data/{saved_NN_target_weights}'):
         DQNAgent.target_network.model.load_weights(f'./data/{saved_NN_target_weights}')
@@ -118,7 +121,7 @@ def run_training(num_learning_iterations):
     else:
         print(f"IMPORT WARNING: '{saved_NN_target_weights}' was not found!")
         print('starting fresh...')
-        exit()  # will remove this later qq
+        # exit()  # will remove this later qq
 
     if path.isfile(f'./data/{saved_epsilon}'):
         with open(f'./data/{saved_epsilon}', 'rb') as eps:
@@ -127,7 +130,7 @@ def run_training(num_learning_iterations):
         print(f"{saved_epsilon} loaded successfully!")
     else:
         print(f'IMPORT WARNING: {saved_epsilon} was not found!')
-        exit()
+        # exit()
 
     # named section  ---------------------------------------------------------------------
     while DQNAgent.learning_count < num_learning_iterations:
@@ -154,11 +157,10 @@ def run_training(num_learning_iterations):
 
 if __name__ == "__main__":
     start_time = time.time()
-    num_learning_iterations = 500
     points_history, DQNAgent = run_training(num_learning_iterations)
     env.close()
 
-    # SAVE STATES
+    # SAVE FILES
     DQNAgent.network.model.save_weights(f'./data/{saved_NN_weights}')
     DQNAgent.target_network.model.save_weights(f'./data/{saved_NN_target_weights}')
     with open(f'./data/{saved_epsilon}', 'w', newline='') as csvFile:
@@ -169,7 +171,9 @@ if __name__ == "__main__":
     # plots and time-keeping
     episodes_v = [i for i in range(int(len(points_history)))]
     total_t = round(time.time()-start_time, 3)
-    print(f'TOTAL TIME TAKEN: {total_t/3600} hours')
+    print(f'TOTAL TIME TAKEN: {round(total_t/3600,3)} hours')
+    print(f'TOTAL TIME TAKEN: {total_t} seconds')
+
     plt.plot(episodes_v, points_history, '.')
     plt.xlabel('Number of Played Game Epochs.')
     plt.ylabel('Average Game Score.')
