@@ -14,9 +14,9 @@ Here is a little list of things we plan to implement
 
 - [x] preprocess fn: remove the walls
 
-- [ ] only learn every 4th frame
+- [x] only learn every 4th frame
 
-- [x] change game-mode to *breakout_v4*? [Slower??]
+- [x] change game-mode to *breakout_v4*?
 
 - [ ] investigate game-mode  *deterministic* version?
 
