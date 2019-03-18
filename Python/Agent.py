@@ -30,6 +30,7 @@ class DQN_Agent:
         self.learning_rate = learning_rate  # Learning rate (alpha)
         self.batch_size = batch_size
         #  For reseting target network
+        self.iteration_count = 0
         self.learning_count = 0
         self.learning_count_max = 5000
         # Replay Memory for bootstrapping

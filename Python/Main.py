@@ -11,6 +11,7 @@ import numpy as np
 import time
 import csv
 import matplotlib
+matplotlib.use("TkAgg")  # for mac users
 from matplotlib import pyplot as plt
 from os import environ, path
 # from keras.models import load_model
@@ -18,7 +19,6 @@ from os import environ, path
 from Agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
-matplotlib.use("TkAgg")  # for mac users
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
 env = gym.make('Breakout-v4')
 
@@ -28,8 +28,8 @@ saved_NN_weights = "saved_weights_run1.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_run1.h5"
 saved_epsilon = "latest_epsilon.csv"
 
-num_learning_iterations = 1000
-learning_delay = 50000
+num_learning_iterations = 100
+learning_delay = 50
 
 
 def episode(agent):
@@ -64,7 +64,7 @@ def episode(agent):
 
         # Network weights update: starts after delay.
         mem_len = len(agent.memory)
-        if mem_len >= learning_delay and mem_len % 4 == 0:
+        if mem_len >= learning_delay and agent.iteration_count % 4 == 0:
             experience_batch = agent.sample_experience()
             agent.network.train(experience_batch, agent.target_network)
             agent.learning_count += 1
@@ -75,6 +75,7 @@ def episode(agent):
             if agent.epsilon > agent.min_epsilon:
                 agent.epsilon *= agent.epsilon_decay
         state = new_state
+        agent.iteration_count += 1
 
     # ----PRINTS FOR TESTING ----------------------
     print(f'Took {episode_steps} steps in {round(time.time()-ep_start_time,3)} seconds with ε = {round(agent.epsilon,3)}')
