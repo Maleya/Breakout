@@ -4,7 +4,6 @@ matplotlib.use("TkAgg")  # for mac users
 import numpy as np
 import csv
 from matplotlib import pyplot as plt
-#matplotlib.use("TkAgg")  # for mac users
 
 # ------------- Helper functions -------------
 def mean_batches(in_list, batch_size):

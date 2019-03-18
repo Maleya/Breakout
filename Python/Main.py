@@ -142,7 +142,7 @@ def run_training(num_learning_iterations):
         with open('./data/plot_data.csv', 'a', newline='') as csvFile:
             writer = csv.writer(csvFile)
             writer.writerow(row)
-        if episode_count % 100 == 0:
+        if DQNAgent.learning_count % 50000 == 0:
             points_history.append(np.mean(mean_history))
             mean_history = []
 
