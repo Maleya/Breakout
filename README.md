@@ -42,7 +42,7 @@ Here is a little list of things we plan to implement
 
 - [ ] average q plotted
 
-- [ ] data gathered indexed by learning iterations not episodes 
+- [x] data gathered indexed by learning iterations not episodes 
 
   
 
