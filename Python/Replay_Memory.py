@@ -20,8 +20,8 @@ class Replay_Memory:
         # Pre-allocate memory
         self.states = np.empty((self.maxlen, self.frame_height, self.frame_width,
                                 self.num_stacked_frames), dtype=np.uint8)
-        self.actions = np.empty(self.maxlen, dtype=np.int32)
-        self.rewards = np.empty(self.maxlen, dtype=np.float32)
+        self.actions = np.empty(self.maxlen, dtype=np.uint8)
+        self.rewards = np.empty(self.maxlen, dtype=np.uint8)
         self.new_states = np.empty((self.maxlen, self.frame_height, self.frame_width,
                                 self.num_stacked_frames), dtype=np.uint8)
         self.terminal_flags = np.empty(self.maxlen, dtype=np.bool)
@@ -80,7 +80,6 @@ if __name__ == "__main__":
     frame = env.reset()
     for i in range(100):
         action = env.action_space.sample()
-        print(type(action))
         new_frame_raw, reward, is_done, _ = env.step(action)
         #env.render()
         new_frame = preprocess(new_frame_raw)
@@ -100,6 +99,19 @@ if __name__ == "__main__":
 
     Agent = DQN_Agent(state_size, action_size)
     #open_mask = np.array([0,1,0,0])
-    np.ones(action_size)
+    open_mask = np.ones(action_size)
     open_mask = np.stack((open_mask,)*32, axis = 0)
-    #print(Agent.network.model.predict([batch_states, open_mask]))
+    output = Agent.network.model.predict([batch_states, open_mask])
+    #print(output)
+    max_q_index_pred = np.argmax(output, axis=-1)
+    print(f'max output values is: {max_q_index_pred}')
+    #print(len(max_q_index_pred))
+    action_mask_array = np.zeros((32,) + (4,))
+    #print(action_mask_array)
+    action_mask_array[np.array([i for i in range(32)]),batch_actions] = 1
+    target_batch = np.zeros((32,) + (4,))
+    True_indicies = np.where(batch_is_dones == False)
+    target_batch[True_indicies,batch_actions[True_indicies]] = batch_actions[True_indicies]
+    print(batch_rewards)
+    print(True_indicies)
+    print(target_batch)

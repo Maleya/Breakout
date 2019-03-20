@@ -20,7 +20,6 @@ class stack_frames:
         for i in range(self.stack_size):
             self.frame_stack.append(initial_frame)
         initial_state = np.stack((initial_frame,)*self.stack_size, axis=-1)
-        initial_state = np.expand_dims(initial_state, axis=0)
         return initial_state
 
     def get_new_state(self,new_frame):
@@ -30,5 +29,4 @@ class stack_frames:
         '''
         self.frame_stack.append(new_frame)
         new_state = np.stack((elem for elem in self.frame_stack),axis=-1)
-        #new_state = np.expand_dims(new_state, axis=0)
         return new_state

@@ -28,8 +28,12 @@ saved_NN_weights = "saved_weights_run1.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_run1.h5"
 saved_epsilon = "latest_epsilon.csv"
 
-num_learning_iterations = 100
-learning_delay = 50
+num_learning_iterations = 50001
+learning_delay = 500
+
+#DATA GATHERING
+prel_history = []
+points_history = []
 
 
 def episode(agent):
@@ -60,37 +64,48 @@ def episode(agent):
         # Procecessing images to 4D tensor for the conv_2D input
         new_frame = preprocess(new_frame)  # Breakout
         new_state = stacked_frames.get_new_state(new_frame)
-        agent.add_experience(state, action, reward, new_state, is_done)
+        #implement new memory
+        if agent.iteration_count % 4 == 0:
+            agent.memory.add(state, action, reward, new_state, is_done)
+            # Network weights update: starts after delay.
+            mem_len = agent.memory.memory_len
+            if mem_len >= learning_delay:
+                #experience_batch = agent.sample_experience()
+                batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones = agent.memory.sample_batch()
 
-        # Network weights update: starts after delay.
-        mem_len = len(agent.memory)
-        if mem_len >= learning_delay and agent.iteration_count % 4 == 0:
-            experience_batch = agent.sample_experience()
-            agent.network.train(experience_batch, agent.target_network)
-            agent.learning_count += 1
-            if agent.learning_count % agent.learning_count_max == 0:
-                agent.reset_target_network()
+                agent.network.train(batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, agent.target_network)
+                agent.learning_count += 1
+                if agent.learning_count % agent.learning_count_max == 0:
+                    agent.reset_target_network()
 
-            # decaying epsilon.
-            if agent.epsilon > agent.min_epsilon:
-                agent.epsilon *= agent.epsilon_decay
+                # decaying epsilon.
+                if agent.epsilon > agent.min_epsilon:
+                    agent.epsilon *= agent.epsilon_decay
         state = new_state
         agent.iteration_count += 1
+        #SAVE POINTS IN HISTORY LIST:
 
+        if agent.learning_count % 50000 == 0 and agent.learning_count != 0:
+            points_history.append(np.mean(prel_history))
+            row = [agent.learning_count, np.mean(prel_history)]
+            with open('./data/plot_data.csv', 'a', newline='') as csvFile:
+                writer = csv.writer(csvFile)
+                writer.writerow(row)
+            prel_history.clear()
+
+    prel_history.append(points)
     # ----PRINTS FOR TESTING ----------------------
     print(f'Took {episode_steps} steps in {round(time.time()-ep_start_time,3)} seconds with ε = {round(agent.epsilon,3)}')
 
     # ---------------------------------------------
     return points
 
-
 def run_training(num_learning_iterations):
     '''This trains our model along with some house-keeping features'''
     frame = env.reset()
     frame = preprocess(frame)
     state = np.stack((frame,)*4, axis=-1)
-    mean_history = []
-    points_history = []
+
     episode_count = 0
     state_size = state.shape
     action_size = env.action_space.n
@@ -135,22 +150,11 @@ def run_training(num_learning_iterations):
     # named section  ---------------------------------------------------------------------
     while DQNAgent.learning_count < num_learning_iterations:
         points = episode(DQNAgent)
-
-        # DATA HANDLING:
         episode_count += 1
-        mean_history.append(points)
-        row = [episode_count, points]
-        with open('./data/plot_data.csv', 'a', newline='') as csvFile:
-            writer = csv.writer(csvFile)
-            writer.writerow(row)
-        if DQNAgent.learning_count % 50000 == 0:
-            points_history.append(np.mean(mean_history))
-            mean_history = []
-
         # PROGRESS PRINTS
         print(f'points for episode {episode_count}: {points}')
-        print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(len(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
-        print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
+        #print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
+        #print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
     csvFile.close()
     return points_history, DQNAgent
 

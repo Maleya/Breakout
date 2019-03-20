@@ -26,7 +26,7 @@ class DQN_net:
         # Model components:
         frames_input = Input(input_size, name='frames')
         actions_input = Input((action_size,), name='mask')
-        norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # may need chaning qq 
+        norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # may need chaning qq
         conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size)(norm_frames)
         conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu')(conv_1)
         flatten = Flatten()(conv_2)
@@ -39,7 +39,7 @@ class DQN_net:
         optimizer = RMSprop(lr=0.00025, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
-    def train(self, experience_batch, target_network):
+    def train(self, batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, target_network):
         '''
         EXPERIENCE_BATCH:
         an element of experieince batch looks like:
@@ -51,34 +51,29 @@ class DQN_net:
         to the DQN algorithm.
         '''
         assert type(target_network) == DQN_net
-        state_train = np.zeros((self.batch_size,) + self.input_size)
-        target_train = np.zeros((self.batch_size,) + (self.actions,))
-        action_mask_array = np.zeros((self.batch_size,) + (self.actions,))  # hotwired actions
+        #state_train = np.zeros((self.batch_size,) + self.input_size)
+        batch_indices = np.array([i for i in range(32)])
+        target_batch = np.zeros((self.batch_size,) + (self.actions,))
+        action_mask_batch = np.zeros((self.batch_size,) + (self.actions,))  # hotwired actions
         open_mask = np.ones(self.actions)
-        open_mask = np.expand_dims(open_mask, axis=0)
+        open_mask_batch = np.stack((open_mask,)*self.batch_size, axis = 0)
 
-        for i, experience in enumerate(experience_batch):
-            state_train[i] = experience[0]
-            action_train = experience[1]
-            reward_train = experience[2]
-            next_state_train = experience[3]
-            is_done = experience[4]
+        output_target_pred = target_network.model.predict([batch_new_states, open_mask_batch])
+        #max_q_index_pred = np.argmax(output_target_pred)
+        max_q_value_pred = np.max(output_target_pred, axis=-1)
+        action_mask_batch[batch_indices, batch_actions] = 1
 
-            action_mask = np.zeros(self.actions)
-            action_mask[action_train] = 1
-            action_mask = np.expand_dims(action_mask, axis=0)
-            action_mask_array[i] = action_mask
+        True_indicies = np.where(batch_is_dones == True)
+        False_indicies = np.where(batch_is_dones == False)
 
-            output_target_pred = target_network.model.predict([next_state_train, open_mask])
-            max_q_value_pred = np.max(output_target_pred[0])
+        #For terminal transitions:
+        target_batch[True_indicies,batch_actions[True_indicies]] = batch_rewards[True_indicies]
+        #For non terminal states:
+        target_batch[False_indicies,batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
+                                self.discount_factor * max_q_value_pred[False_indicies]
 
-            if is_done is True:
-                target_train[i][action_train] = reward_train
-            else:
-                target_train[i][action_train] = reward_train + \
-                                        self.discount_factor * max_q_value_pred  # output_target_pred[0][max_q_action]
-
-        self.model.fit([state_train, action_mask_array], target_train,
+        #New input: batch_states
+        self.model.fit([batch_states, action_mask_batch], target_batch,
                        batch_size=self.batch_size, epochs=1, verbose=0)
 
 

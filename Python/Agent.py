@@ -3,6 +3,7 @@ import numpy as np
 import random as rnd
 from collections import deque
 from NeuralNet import DQN_net
+from Replay_Memory import Replay_Memory
 env = gym.make('Breakout-v4')
 
 
@@ -34,8 +35,8 @@ class DQN_Agent:
         self.learning_count = 0
         self.learning_count_max = 5000
         # Replay Memory for bootstrapping
-        self.memory = deque(maxlen=500000)
-
+        #self.memory = deque(maxlen=500000)
+        self.memory = Replay_Memory()
         # Neural Networks for the DQN:
         # Main Networks that continuisly choose actions.
         self.network = DQN_net(self.state_size, self.action_size,
@@ -48,12 +49,6 @@ class DQN_Agent:
                      batch_size = self.batch_size,
                      discount_factor = self.discount_factor,
                      learning_rate = self.learning_rate)
-
-    def add_experience(self, state, action, reward, next_state, done):
-        '''If len(memory) = maxlen it will pop the oldest data from left
-        and add the new data at the end of the list.
-        '''
-        self.memory.append((state, action, reward, next_state, done))
 
     def get_action(self, state):
         """ performs a random action with chance epsilon otherwise
