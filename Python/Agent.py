@@ -33,7 +33,7 @@ class DQN_Agent:
         #  For reseting target network
         self.iteration_count = 0
         self.learning_count = 0
-        self.learning_count_max = 5000
+        self.learning_count_max = 10000
         # Replay Memory for bootstrapping
         #self.memory = deque(maxlen=500000)
         self.memory = Replay_Memory()

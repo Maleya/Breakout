@@ -42,7 +42,7 @@ def episode(agent):
 
     assert type(agent) == DQN_Agent
     points = 0
-    episode_steps = 0
+    learning_steps = 0
     ep_start_time = time.time()
 
     # PREP A FRAME
@@ -57,7 +57,6 @@ def episode(agent):
         if agent.video is True:
             env.render()
 
-        episode_steps += 1
         action = agent.get_action(state)
         new_frame, reward, is_done, _ = env.step(action)
         points += reward
@@ -75,6 +74,7 @@ def episode(agent):
 
                 agent.network.train(batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, agent.target_network)
                 agent.learning_count += 1
+                learning_steps += 1
                 if agent.learning_count % agent.learning_count_max == 0:
                     agent.reset_target_network()
 
@@ -95,7 +95,7 @@ def episode(agent):
 
     prel_history.append(points)
     # ----PRINTS FOR TESTING ----------------------
-    print(f'Took {episode_steps} steps in {round(time.time()-ep_start_time,3)} seconds with ε = {round(agent.epsilon,3)}')
+    print(f'Did {learning_steps} minibatch updates in {round(time.time()-ep_start_time,3)} seconds with ε = {round(agent.epsilon,3)}')
 
     # ---------------------------------------------
     return points
@@ -154,7 +154,7 @@ def run_training(num_learning_iterations):
         # PROGRESS PRINTS
         print(f'points for episode {episode_count}: {points}')
         #print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
-        #print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
+        print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
     csvFile.close()
     return points_history, DQNAgent
 

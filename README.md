@@ -1,16 +1,16 @@
 # Breakout-v4
 
-Learning to play Breakout through reinforcement learning, implementing the DQN algorithm described in the article '[Playing Atari with Deep Reinforcement Learning](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)'.  *This is still very much a work in progress* 
+Learning to play Breakout through reinforcement learning, implementing the DQN algorithm described in the article '[Playing Atari with Deep Reinforcement Learning](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)'.  *This is still very much a work in progress*
 
 
 
 ## Changes and todo lists
 
-Here is a little list of things we plan to implement 
+Here is a little list of things we plan to implement
 
 #### Code improvements
 
-- [x] Renamed files to remove versioning + todo list. 
+- [x] Renamed files to remove versioning + todo list.
 
 - [x] preprocess fn: remove the walls
 
@@ -20,7 +20,11 @@ Here is a little list of things we plan to implement
 
 - [ ] investigate game-mode  *deterministic* version?
 
-- [ ] Replay memory class implemented in numpy (ints and zipping)
+- [x] Replay memory class implemented in numpy
+
+- [ ] Store memory (ints and zipping)
+
+- [ ] initializer ??
 
 - [ ] numba.jit use investigated
 
@@ -28,29 +32,27 @@ Here is a little list of things we plan to implement
 
 - [x] check if files to be loaded exist
 
-- [ ] track learning iterations over runs 
+- [x] track learning iterations over runs
 
-  
+
 
 #### Data management & plots
 
-- [x] data folder with checks in place 
+- [x] data folder with checks in place
 
-- [ ] restructure what we save: sample 2000 states and document the average of the $q_{max}$ over all those states. save into csv 
+- [ ] restructure what we save: sample 5000 states and document the average of the $q_{max}$ over all those states. save into csv
 
 - [ ] box plots added
 
-- [ ] average q plotted
+- [x] data gathered indexed by learning iterations not episodes
 
-- [x] data gathered indexed by learning iterations not episodes 
 
-  
 
 ## File structure (outdated)
 
 The main algorithm is started from **DQN_algorithm.py** which in turn loads a few helper files.
 
-* DQN_agent 
+* DQN_agent
 * NN_v1
 * preprocess_BO
 
@@ -63,6 +65,3 @@ To be filled in soon.
 Martti Yap
 
 Gabriel Andersson
-
-
-
