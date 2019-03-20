@@ -4,7 +4,7 @@ import random as rnd
 from collections import deque
 from NeuralNet import DQN_net
 from Replay_Memory import Replay_Memory
-env = gym.make('Breakout-v4')
+env = gym.make('BreakoutDeterministic-v4')
 
 
 class DQN_Agent:

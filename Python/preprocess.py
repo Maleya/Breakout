@@ -18,7 +18,7 @@ def preprocess(im):
 if __name__ == "__main__":
     # generate a realistic frame
     import gym
-    env = gym.make('Breakout-v4')
+    env = gym.make('BreakoutDeterministic-v4')
     frame = env.reset()
     frame, reward, done, _, = env.step(env.action_space.sample())
     env.close()

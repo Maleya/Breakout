@@ -76,7 +76,7 @@ if __name__ == "__main__":
     from stack_frames import stack_frames
 
     Replay_Memory = Replay_Memory()
-    env = gym.make('Breakout-v4')
+    env = gym.make('BreakoutDeterministic-v4')
     frame = env.reset()
     for i in range(100):
         action = env.action_space.sample()

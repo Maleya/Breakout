@@ -81,7 +81,7 @@ class DQN_net:
 if __name__ == "__main__":
     from preprocess import preprocess
 
-    env = gym.make('Breakout-v4')
+    env = gym.make('BreakoutDeterministic-v4')
     frame = env.reset()
     new_frame, reward, is_done, _ = env.step(env.action_space.sample())
     new_frame = preprocess(new_frame)

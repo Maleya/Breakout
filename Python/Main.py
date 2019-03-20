@@ -20,7 +20,7 @@ from Agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
-env = gym.make('Breakout-v4')
+env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
@@ -115,7 +115,7 @@ def run_training(num_learning_iterations):
                          discount_factor=0.99,
                          learning_rate=0.00025,
                          epsilon=1,
-                         epsilon_decrease_rate=0.9999954,  # becomes 0.1 after 500 000 learning iterations
+                         epsilon_decrease_rate=0.999997697417558,  # becomes 0.1 after 10**6 learning iterations
                          min_epsilon=0.1,
                          video=False,
                          epsilon_linear=True)
