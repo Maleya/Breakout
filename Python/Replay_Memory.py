@@ -26,7 +26,7 @@ class Replay_Memory:
                                 self.num_stacked_frames), dtype=np.uint8)
         self.terminal_flags = np.empty(self.maxlen, dtype=np.bool)
 
-        self.indices = np.empty(self.batch_size, dtype=np.int32)
+        #self.indices = np.empty(self.batch_size, dtype=np.int32)
 
         #self.frames = np.empty((self.maxlen, self.frame_height, self.frame_width), dtype=np.uint8)
 
@@ -66,10 +66,8 @@ class Replay_Memory:
 
         '''
         assert self.memory_len  >= self.batch_size
-        index_max = min(self.memory_len ,self.maxlen)
-        self.indices = np.random.randint(index_max, size=self.batch_size)
-        print(self.indices)
-        return self.states[self.indices], self.actions[self.indices], self.rewards[self.indices], self.new_states[self.indices], self.terminal_flags[self.indices]
+        batch_indices = np.random.randint(self.memory_len, size=self.batch_size)
+        return self.states[batch_indices], self.actions[batch_indices], self.rewards[batch_indices], self.new_states[batch_indices], self.terminal_flags[batch_indices]
 
 # TEST CODE
 if __name__ == "__main__":
@@ -82,6 +80,7 @@ if __name__ == "__main__":
     frame = env.reset()
     for i in range(100):
         action = env.action_space.sample()
+        print(type(action))
         new_frame_raw, reward, is_done, _ = env.step(action)
         #env.render()
         new_frame = preprocess(new_frame_raw)
@@ -89,17 +88,18 @@ if __name__ == "__main__":
         Replay_Memory.add(state, action, reward, state, is_done)
 
     batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones = Replay_Memory.sample_batch()
-    print(f'shape of batch_states is: {batch_states.shape}')
-    print(f'First element in batch_states is: {batch_states[21][21][20]}')
+    #print(f'shape of batch_states is: {batch_states.shape}')
+    #print(f'First element in batch_states is: {batch_states[21][21][20]}')
     #print(f'Last state: {new_frame_raw}')
-    print(f'Last state processed: {new_frame}')
+    #print(f'Last state processed: {new_frame}')
     state_size = state.shape
-    print(f'State shape is: {state_size}')
+    #print(f'State shape is: {state_size}')
 
     state_size = state.shape
     action_size = env.action_space.n
 
     Agent = DQN_Agent(state_size, action_size)
-    open_mask = np.ones(action_size)
+    #open_mask = np.array([0,1,0,0])
+    np.ones(action_size)
     open_mask = np.stack((open_mask,)*32, axis = 0)
     #print(Agent.network.model.predict([batch_states, open_mask]))

@@ -58,13 +58,15 @@ class DQN_Agent:
     def get_action(self, state):
         """ performs a random action with chance epsilon otherwise
         returns argmax of the Q values"""
+
         if np.random.rand() <= self.epsilon:
             # Selects one of the possible actions randomly
             return env.action_space.sample()
 
         open_mask = np.ones(self.action_size)  # make an open mask
         open_mask = np.expand_dims(open_mask, axis=0)
-        act_values = self.network.model.predict([state, open_mask])
+        exp_state = np.expand_dims(state, axis=0)
+        act_values = self.network.model.predict([exp_state, open_mask])
         # Shape: [ [q_action_1, ..., q_action_n] ]
         # returns index corresponding to chosen action
         return np.argmax(act_values[0])
