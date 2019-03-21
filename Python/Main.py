@@ -16,7 +16,6 @@ matplotlib.use("TkAgg")  # for mac users
 from matplotlib import pyplot as plt
 from os import environ, path
 # from keras.models import load_model
-# from NeuralNet import DQN_net
 from Agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
@@ -33,25 +32,26 @@ saved_scores = "plot_data.csv"
 num_learning_iterations = 1000000
 learning_delay = 50
 
-#DATA GATHERING
+# DATA GATHERING
 prel_history = []
 points_history = []
 
 # HYPERPARAMETERS
-minibatch_size = 32 #
-Replay_Memory_size = 250000 #Corresponding to store 1 000 000 frames
-Agent_history_length = 4 #
-target_upd_freq = 10000 # Target network update frequency
-discount_factor = 0.99 # Used for train in DQN_net as discount_factor for future rewards
-learning_rate = 0.00025 # Used in DQN_net RMSprop
-gradient_momentum = 0.95 # Used in DQN_net RMSprop
-initial_exploration = 1 #Initial value of epsilon in epsilon-greedy
-final_exploration = 0.1 # Final value of epsilon in epsilon-greedy
-final_exploration_frame = 1000000 # Epsilon decay rate
-Replay_start_size = learning_delay # The minimum size of memory-replay, after which the sampling and learning process starts
+minibatch_size = 32  #
+Replay_Memory_size = 250000  # Corresponding to store 1 000 000 frames
+Agent_history_length = 4  #
+target_upd_freq = 10000  # Target network update frequency
+discount_factor = 0.99  # Used for train in DQN_net as discount_factor for future rewards
+learning_rate = 0.00025  # Used in DQN_net RMSprop
+gradient_momentum = 0.95  # Used in DQN_net RMSprop
+initial_exploration = 1  # Initial value of epsilon in epsilon-greedy
+final_exploration = 0.1  # Final value of epsilon in epsilon-greedy
+final_exploration_frame = 1000000  # Epsilon decay rate
+Replay_start_size = learning_delay  # The minimum size of memory-replay, after which the sampling and learning process starts
 
-#epsilon decay rate calculation
+# epsilon decay rate calculation
 decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
+
 
 def episode(agent):
     '''An episode constitues one normal run of a game.
@@ -96,7 +96,7 @@ def episode(agent):
                 # decaying epsilon.
                 if agent.epsilon > agent.min_epsilon:
                     agent.epsilon *= agent.epsilon_decay
-            #SAVE POINTS IN HISTORY LIST:
+            # SAVE POINTS IN HISTORY LIST:
 
             if agent.learning_count % 50000 == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
@@ -116,6 +116,7 @@ def episode(agent):
 
     # ---------------------------------------------
     return points
+
 
 def run_training(num_learning_iterations):
     '''This trains our model along with some house-keeping features'''
@@ -173,9 +174,9 @@ def run_training(num_learning_iterations):
         episode_count += 1
         # PROGRESS PRINTS
         print(f'points for episode {episode_count}: {points}')
-        #print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
+        # print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
         print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
-    #csvFile.close()
+    # csvFile.close()
     return points_history, DQNAgent
 
 

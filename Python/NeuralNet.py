@@ -57,7 +57,7 @@ class DQN_net:
         to the DQN algorithm.
         '''
         assert type(target_network) == DQN_net
-        #state_train = np.zeros((self.batch_size,) + self.input_size)
+        # state_train = np.zeros((self.batch_size,) + self.input_size)
         batch_indices = np.array([i for i in range(self.batch_size)])
         target_batch = np.zeros((self.batch_size,) + (self.actions,))
         action_mask_batch = np.zeros((self.batch_size,) + (self.actions,))  # hotwired actions
@@ -65,17 +65,17 @@ class DQN_net:
         open_mask_batch = np.stack((open_mask,)*self.batch_size, axis = 0)
 
         output_target_pred = target_network.model.predict([batch_new_states, open_mask_batch])
-        #max_q_index_pred = np.argmax(output_target_pred)
+        # max_q_index_pred = np.argmax(output_target_pred)
         max_q_value_pred = np.max(output_target_pred, axis=-1)
         action_mask_batch[batch_indices, batch_actions] = 1
 
         True_indicies = np.where(batch_is_dones == True)
         False_indicies = np.where(batch_is_dones == False)
 
-        #For terminal transitions:
-        target_batch[True_indicies,batch_actions[True_indicies]] = batch_rewards[True_indicies]
-        #For non-terminal transitions:
-        target_batch[False_indicies,batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
+        # For terminal transitions:
+        target_batch[True_indicies, batch_actions[True_indicies]] = batch_rewards[True_indicies]
+        # For non-terminal transitions:
+        target_batch[False_indicies, batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
                                 self.discount_factor * max_q_value_pred[False_indicies]
 
         #New input: batch_states

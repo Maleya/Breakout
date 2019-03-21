@@ -6,6 +6,7 @@ import csv
 from matplotlib import pyplot as plt
 
 # ------------- Helper functions -------------
+
 def mean_batches(in_list, batch_size):
     old_i = 0
     mean_list = []
