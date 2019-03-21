@@ -10,7 +10,7 @@ env = gym.make('BreakoutDeterministic-v4')
 class DQN_Agent:
     def __init__(self, state_size, action_size,
                  batch_size=1,
-                 discount_factor=0.95,
+                 discount_factor=0.99,
                  learning_rate=0.00025,
                  epsilon=1,
                  epsilon_decrease_rate=0.99,
@@ -65,9 +65,6 @@ class DQN_Agent:
         # Shape: [ [q_action_1, ..., q_action_n] ]
         # returns index corresponding to chosen action
         return np.argmax(act_values[0])
-
-    def sample_experience(self):
-        return rnd.sample(self.memory, self.batch_size)
 
     def reset_target_network(self):
         """

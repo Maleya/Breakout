@@ -1,5 +1,5 @@
 """
-This runs our main algorithm, and his the highest in the code heirachy import-wise.
+This runs our main algorithm, and is the highest in the code heirachy import-wise.
 
 note:
 num_learning_iterations starts counting after we filled agent memory with agent.batch_size*[num]
@@ -24,12 +24,13 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_run1.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_run1.h5"
-saved_epsilon = "latest_epsilon.csv"
+saved_NN_weights = "saved_weights_new_run_test1.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_new_run_test1.h5"
+saved_epsilon = "latest_epsilon_new_run_test1.csv"
+saved_scores = "plot_data.csv"
 
-num_learning_iterations = 50001
-learning_delay = 500
+num_learning_iterations = 1000000
+learning_delay = 50000
 
 #DATA GATHERING
 prel_history = []
@@ -69,9 +70,7 @@ def episode(agent):
             # Network weights update: starts after delay.
             mem_len = agent.memory.memory_len
             if mem_len >= learning_delay:
-                #experience_batch = agent.sample_experience()
                 batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones = agent.memory.sample_batch()
-
                 agent.network.train(batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, agent.target_network)
                 agent.learning_count += 1
                 learning_steps += 1
@@ -81,17 +80,19 @@ def episode(agent):
                 # decaying epsilon.
                 if agent.epsilon > agent.min_epsilon:
                     agent.epsilon *= agent.epsilon_decay
+            #SAVE POINTS IN HISTORY LIST:
+
+            if agent.learning_count % 50000 == 0 and agent.learning_count != 0:
+                points_history.append(np.mean(prel_history))
+                print(prel_history)
+                row = [agent.learning_count, np.mean(prel_history)]
+                with open(f'./data/{saved_scores}', 'a', newline='') as csvFile:
+                    writer = csv.writer(csvFile)
+                    writer.writerow(row)
+                csvFile.close()
+                prel_history.clear()
         state = new_state
         agent.iteration_count += 1
-        #SAVE POINTS IN HISTORY LIST:
-
-        if agent.learning_count % 50000 == 0 and agent.learning_count != 0:
-            points_history.append(np.mean(prel_history))
-            row = [agent.learning_count, np.mean(prel_history)]
-            with open('./data/plot_data.csv', 'a', newline='') as csvFile:
-                writer = csv.writer(csvFile)
-                writer.writerow(row)
-            prel_history.clear()
 
     prel_history.append(points)
     # ----PRINTS FOR TESTING ----------------------
@@ -155,7 +156,7 @@ def run_training(num_learning_iterations):
         print(f'points for episode {episode_count}: {points}')
         #print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
         print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
-    csvFile.close()
+    #csvFile.close()
     return points_history, DQNAgent
 
 

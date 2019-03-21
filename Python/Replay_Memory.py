@@ -26,7 +26,7 @@ class Replay_Memory:
                                 self.num_stacked_frames), dtype=np.uint8)
         self.terminal_flags = np.empty(self.maxlen, dtype=np.bool)
 
-        #self.indices = np.empty(self.batch_size, dtype=np.int32)
+        self.indices = np.empty(self.batch_size, dtype=np.int32)
 
         #self.frames = np.empty((self.maxlen, self.frame_height, self.frame_width), dtype=np.uint8)
 
@@ -67,6 +67,7 @@ class Replay_Memory:
         '''
         assert self.memory_len  >= self.batch_size
         batch_indices = np.random.randint(self.memory_len, size=self.batch_size)
+        self.indices = batch_indices
         return self.states[batch_indices], self.actions[batch_indices], self.rewards[batch_indices], self.new_states[batch_indices], self.terminal_flags[batch_indices]
 
 # TEST CODE
@@ -78,9 +79,12 @@ if __name__ == "__main__":
     Replay_Memory = Replay_Memory()
     env = gym.make('BreakoutDeterministic-v4')
     frame = env.reset()
-    for i in range(100):
+    for i in range(1000):
         action = env.action_space.sample()
         new_frame_raw, reward, is_done, _ = env.step(action)
+        if is_done == True:
+            frame = env.reset()
+        #print(is_done)
         #env.render()
         new_frame = preprocess(new_frame_raw)
         state = np.stack((new_frame,)*4, axis=-1)
@@ -101,17 +105,25 @@ if __name__ == "__main__":
     #open_mask = np.array([0,1,0,0])
     open_mask = np.ones(action_size)
     open_mask = np.stack((open_mask,)*32, axis = 0)
-    output = Agent.network.model.predict([batch_states, open_mask])
-    #print(output)
-    max_q_index_pred = np.argmax(output, axis=-1)
-    print(f'max output values is: {max_q_index_pred}')
+    output = Agent.network.model.predict([batch_new_states, open_mask])
+    print(output)
+    max_q_pred = np.max(output, axis=-1)
+    print(f'max output values is: {max_q_pred}')
     #print(len(max_q_index_pred))
     action_mask_array = np.zeros((32,) + (4,))
     #print(action_mask_array)
     action_mask_array[np.array([i for i in range(32)]),batch_actions] = 1
     target_batch = np.zeros((32,) + (4,))
-    True_indicies = np.where(batch_is_dones == False)
-    target_batch[True_indicies,batch_actions[True_indicies]] = batch_actions[True_indicies]
-    print(batch_rewards)
-    print(True_indicies)
+    True_indicies = np.where(batch_is_dones == True)
+    target_batch[True_indicies,batch_actions[True_indicies]] = batch_rewards[True_indicies]
+    #print(batch_rewards)
+    #print(True_indicies)
+    #print(target_batch)
+    False_indicies = np.where(batch_is_dones == False)
+    target_batch[False_indicies,batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
+                            0.99 * max_q_pred[False_indicies]
+    print(max_q_pred[False_indicies])
     print(target_batch)
+    print(Replay_Memory.indices)
+    print(f'the false indicies: {False_indicies}')
+    print(f'True indicies: {True_indicies}')

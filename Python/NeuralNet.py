@@ -36,7 +36,7 @@ class DQN_net:
 
         # compile model:
         self.model = Model(inputs=[frames_input, actions_input], outputs=masked_output)
-        optimizer = RMSprop(lr=0.00025, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
+        optimizer = RMSprop(lr=learning_rate, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
     def train(self, batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, target_network):
@@ -52,7 +52,7 @@ class DQN_net:
         '''
         assert type(target_network) == DQN_net
         #state_train = np.zeros((self.batch_size,) + self.input_size)
-        batch_indices = np.array([i for i in range(32)])
+        batch_indices = np.array([i for i in range(self.batch_size)])
         target_batch = np.zeros((self.batch_size,) + (self.actions,))
         action_mask_batch = np.zeros((self.batch_size,) + (self.actions,))  # hotwired actions
         open_mask = np.ones(self.actions)
