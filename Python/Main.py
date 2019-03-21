@@ -11,6 +11,7 @@ import numpy as np
 import time
 import csv
 import matplotlib
+import math
 matplotlib.use("TkAgg")  # for mac users
 from matplotlib import pyplot as plt
 from os import environ, path
@@ -30,12 +31,27 @@ saved_epsilon = "latest_epsilon_new_run_test1.csv"
 saved_scores = "plot_data.csv"
 
 num_learning_iterations = 1000000
-learning_delay = 50000
+learning_delay = 50
 
 #DATA GATHERING
 prel_history = []
 points_history = []
 
+# HYPERPARAMETERS
+minibatch_size = 32 #
+Replay_Memory_size = 250000 #Corresponding to store 1 000 000 frames
+Agent_history_length = 4 #
+target_upd_freq = 10000 # Target network update frequency
+discount_factor = 0.99 # Used for train in DQN_net as discount_factor for future rewards
+learning_rate = 0.00025 # Used in DQN_net RMSprop
+gradient_momentum = 0.95 # Used in DQN_net RMSprop
+initial_exploration = 1 #Initial value of epsilon in epsilon-greedy
+final_exploration = 0.1 # Final value of epsilon in epsilon-greedy
+final_exploration_frame = 1000000 # Epsilon decay rate
+Replay_start_size = learning_delay # The minimum size of memory-replay, after which the sampling and learning process starts
+
+#epsilon decay rate calculation
+decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
 
 def episode(agent):
     '''An episode constitues one normal run of a game.
@@ -43,13 +59,13 @@ def episode(agent):
 
     assert type(agent) == DQN_Agent
     points = 0
-    learning_steps = 0
+    learning_steps = 0 # For print at end of every episode
     ep_start_time = time.time()
 
     # PREP A FRAME
     initial_frame = env.reset()
     initial_frame = preprocess(initial_frame)
-    stacked_frames = stack_frames()
+    stacked_frames = stack_frames(stack_size=Agent_history_length)
     state = stacked_frames.create_stack(initial_frame)
     is_done = False
 
@@ -75,7 +91,7 @@ def episode(agent):
                 agent.learning_count += 1
                 learning_steps += 1
                 if agent.learning_count % agent.learning_count_max == 0:
-                    agent.reset_target_network()
+                    agent.update_target_network()
 
                 # decaying epsilon.
                 if agent.epsilon > agent.min_epsilon:
@@ -112,12 +128,15 @@ def run_training(num_learning_iterations):
     action_size = env.action_space.n
 
     DQNAgent = DQN_Agent(state_size, action_size,
-                         batch_size=32,
-                         discount_factor=0.99,
-                         learning_rate=0.00025,
-                         epsilon=1,
-                         epsilon_decrease_rate=0.999997697417558,  # becomes 0.1 after 10**6 learning iterations
-                         min_epsilon=0.1,
+                         batch_size=minibatch_size,
+                         discount_factor=discount_factor,
+                         learning_rate=learning_rate,
+                         epsilon=initial_exploration,
+                         epsilon_decrease_rate=decay_factor,  # becomes 0.1 after 10**6 learning iterations
+                         min_epsilon=final_exploration,
+                         Replay_Memory_size=Replay_Memory_size,
+                         target_upd_freq=target_upd_freq,
+                         gradient_momentum=gradient_momentum,
                          video=False,
                          epsilon_linear=True)
 

@@ -8,6 +8,9 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 class DQN_Agent:
+    """
+    info
+    """
     def __init__(self, state_size, action_size,
                  batch_size=1,
                  discount_factor=0.99,
@@ -15,6 +18,9 @@ class DQN_Agent:
                  epsilon=1,
                  epsilon_decrease_rate=0.99,
                  min_epsilon=0.1,
+                 Replay_Memory_size=250000,
+                 target_upd_freq=10000,
+                 gradient_momentum=0.95,
                  video=False,
                  epsilon_linear=True):
 
@@ -33,26 +39,31 @@ class DQN_Agent:
         #  For reseting target network
         self.iteration_count = 0
         self.learning_count = 0
-        self.learning_count_max = 10000
+        self.learning_count_max = target_upd_freq
         # Replay Memory for bootstrapping
         #self.memory = deque(maxlen=500000)
-        self.memory = Replay_Memory()
+        self.memory = Replay_Memory(maxlen=Replay_Memory_size)
         # Neural Networks for the DQN:
         # Main Networks that continuisly choose actions.
         self.network = DQN_net(self.state_size, self.action_size,
-                     batch_size = self.batch_size,
-                     discount_factor = self.discount_factor,
-                     learning_rate = self.learning_rate)
+                     batch_size=self.batch_size,
+                     discount_factor=self.discount_factor,
+                     learning_rate=self.learning_rate,
+                     gradient_momentum=gradient_momentum)
 
         # Network to predict target in training algorithm
         self.target_network = DQN_net(self.state_size, self.action_size,
-                     batch_size = self.batch_size,
-                     discount_factor = self.discount_factor,
-                     learning_rate = self.learning_rate)
+                     batch_size=self.batch_size,
+                     discount_factor=self.discount_factor,
+                     learning_rate=self.learning_rate,
+                     gradient_momentum=gradient_momentum)
 
     def get_action(self, state):
-        """ performs a random action with chance epsilon otherwise
-        returns argmax of the Q values"""
+        """
+        Returns a random action with probability epsilon.
+        Otherwise, returns argmax of the Q values predicted
+        by the DQN_net.
+        """
 
         if np.random.rand() <= self.epsilon:
             # Selects one of the possible actions randomly
@@ -66,7 +77,7 @@ class DQN_Agent:
         # returns index corresponding to chosen action
         return np.argmax(act_values[0])
 
-    def reset_target_network(self):
+    def update_target_network(self):
         """
         Updates the target DQN with the current weights of the main DQN.
         """

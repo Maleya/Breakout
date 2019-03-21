@@ -28,13 +28,6 @@ class Replay_Memory:
 
         self.indices = np.empty(self.batch_size, dtype=np.int32)
 
-        #self.frames = np.empty((self.maxlen, self.frame_height, self.frame_width), dtype=np.uint8)
-
-        # Pre-allocate memory for the states and new_states in a minibatch
-        #self.batch_states = np.empty((self.maxlen, self.frame_height, self.frame_width,
-        #                        self.num_stacked_frames), dtype=np.uint8)
-        #self.batch_new_states = np.empty((self.maxlen, self.frame_height, self.frame_width,
-        #                        self.num_stacked_frames), dtype=np.uint8)
 
     def add(self,state, action, reward, new_state, is_done):
         '''

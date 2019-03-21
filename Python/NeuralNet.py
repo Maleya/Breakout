@@ -11,10 +11,14 @@ environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow ?
 
 
 class DQN_net:
+    """
+    info
+    """
     def __init__(self, input_size, action_size,
                  batch_size=32,
                  discount_factor=0.95,
-                 learning_rate=0.00025):
+                 learning_rate=0.00025,
+                 gradient_momentum=0.95):
 
         # Hyper Parameters
         self.actions = action_size
@@ -36,18 +40,20 @@ class DQN_net:
 
         # compile model:
         self.model = Model(inputs=[frames_input, actions_input], outputs=masked_output)
-        optimizer = RMSprop(lr=learning_rate, rho=0.95, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
+        optimizer = RMSprop(lr=learning_rate, rho=gradient_momentum, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
     def train(self, batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, target_network):
         '''
-        EXPERIENCE_BATCH:
-        an element of experieince batch looks like:
-        (state, action, reward, next_state, done)
-        and is a list of size batch_size
+        Preforms a minibatch update of neural network.
 
-        TARGET_NETWORK:
-        target_network is a DQN_net instance to generate target according
+        INPUT SHAPES:
+        batch_states: (32,84,84,4)
+        batch_actions:(32,action_size)
+        batch_rewards:(32)
+        batch_new_states:(32,84,84,4)
+        batch_is_dones:(32)
+        target_network: DQN_net instance to generate target according
         to the DQN algorithm.
         '''
         assert type(target_network) == DQN_net
@@ -68,7 +74,7 @@ class DQN_net:
 
         #For terminal transitions:
         target_batch[True_indicies,batch_actions[True_indicies]] = batch_rewards[True_indicies]
-        #For non terminal states:
+        #For non-terminal transitions:
         target_batch[False_indicies,batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
                                 self.discount_factor * max_q_value_pred[False_indicies]
 
