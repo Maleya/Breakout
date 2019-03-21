@@ -6,19 +6,18 @@ num_learning_iterations starts counting after we filled agent memory with agent.
 Before running a fresh run:
     clean out latest_epsilon and plot_data.csv
 """
+import matplotlib
 import gym
 import numpy as np
 import time
 import csv
-import matplotlib
 import math
-matplotlib.use("TkAgg")  # for mac users
-from matplotlib import pyplot as plt
 from os import environ, path
-# from keras.models import load_model
 from Agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
+matplotlib.use("TkAgg")  # for mac users
+from matplotlib import pyplot as plt
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
 env = gym.make('BreakoutDeterministic-v4')
 
@@ -80,7 +79,7 @@ def episode(agent):
         # Procecessing images to 4D tensor for the conv_2D input
         new_frame = preprocess(new_frame)  # Breakout
         new_state = stacked_frames.get_new_state(new_frame)
-        #implement new memory
+        # implement new memory
         if agent.iteration_count % 4 == 0:
             agent.memory.add(state, action, reward, new_state, is_done)
             # Network weights update: starts after delay.
