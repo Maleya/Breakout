@@ -32,9 +32,11 @@ Here is a little list of things we plan to implement
 
 - [x] track learning iterations over runs
 
-- [ ] Different [loss function](https://towardsdatascience.com/tutorial-double-deep-q-learning-with-dueling-network-architectures-4c1b3fb7f756)
+- [ ] Different [loss function](https://towardsdatascience.com/tutorial-double-deep-q-learning-with-dueling-network-architectures-4c1b3fb7f756) (clipping!)
 
-- [ ] Loss function clipping 
+- [ ] Use the right initializer (VarianceScaling)
+
+- [ ] Change NN architecture to match (Nature -OR- DQN article)
 
   
 
