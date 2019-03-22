@@ -28,8 +28,8 @@ saved_NN_target_weights = "target_saved_weights_new_run_test1.h5"
 saved_epsilon = "latest_epsilon_new_run_test1.csv"
 saved_scores = "plot_data.csv"
 
-num_learning_iterations = 1000000
-learning_delay = 50
+num_learning_iterations = 10**6/2
+learning_delay = 50000  # dqn settings
 
 # DATA GATHERING
 prel_history = []
@@ -51,6 +51,7 @@ Replay_start_size = learning_delay  # The minimum size of memory-replay, after w
 # epsilon decay rate calculation
 decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
 
+# -------------------------------------------------------------------------
 
 def episode(agent):
     '''An episode constitues one normal run of a game.
