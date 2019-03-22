@@ -36,7 +36,7 @@ Here is a little list of things we plan to implement
 
 - [x] Use the right initializer: VarianceScaling  (scale =2)
 
-- [ ] Change NN architecture to match (Nature -OR- DQN article)
+- [ ] Change NN architecture to match? (Nature -OR- DQN article)
 
   
 
@@ -44,12 +44,9 @@ Here is a little list of things we plan to implement
 
 #### Data management & plots
 
-- [x] data folder with checks in place
-
+- [ ] Check if data files exist and create those that do not (**data_csv file**)
 - [ ] restructure what we save: sample 5000 states and document the average of the $q_{max}$ over all those states. save into csv
-
 - [ ] box plots added
-
 - [x] data gathered indexed by learning iterations not episodes
 
 

@@ -23,9 +23,9 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_new_run_test1.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_new_run_test1.h5"
-saved_epsilon = "latest_epsilon_new_run_test1.csv"
+saved_NN_weights = "saved_weights_new_run_test2.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_new_run_test2.h5"
+saved_epsilon = "latest_epsilon_new_run_test2.csv"
 saved_scores = "plot_data.csv"
 
 num_learning_iterations = 10**6/2
@@ -166,6 +166,15 @@ def run_training(num_learning_iterations):
 
     else:
         print(f'IMPORT WARNING: {saved_epsilon} was not found!')
+
+    if path.isfile(f'./data/{saved_scores}'):
+        print(f"{saved_scores} detected successfully!")
+
+    else:
+        print(f"IMPORT WARNING: '{saved_scores}' was not found!")
+        # TO DO: make an empty csv file for this 
+        # print('starting fresh...')
+    
     print("\n\n")
 
     # named section  ---------------------------------------------------------------------

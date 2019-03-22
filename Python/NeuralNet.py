@@ -80,7 +80,7 @@ class DQN_net:
         target_batch[False_indicies, batch_actions[False_indicies]] = batch_rewards[False_indicies] + \
                                 self.discount_factor * max_q_value_pred[False_indicies]
 
-        #New input: batch_states
+        # New input: batch_states
         self.model.fit([batch_states, action_mask_batch], target_batch,
                        batch_size=self.batch_size, epochs=1, verbose=0)
 
