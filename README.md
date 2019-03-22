@@ -34,7 +34,7 @@ Here is a little list of things we plan to implement
 
 - [ ] Different [loss function](https://towardsdatascience.com/tutorial-double-deep-q-learning-with-dueling-network-architectures-4c1b3fb7f756) (clipping!)
 
-- [ ] Use the right initializer (VarianceScaling)
+- [x] Use the right initializer: VarianceScaling  (scale =2)
 
 - [ ] Change NN architecture to match (Nature -OR- DQN article)
 

@@ -4,6 +4,7 @@ from keras.models import Sequential, Input, Model
 from keras.layers import Conv2D, Flatten, Dense, Convolution2D, Lambda, Multiply, convolutional, multiply
 from keras.optimizers import RMSprop
 from keras.backend import set_image_data_format
+from keras.initializers import VarianceScaling
 import gym
 import numpy as np
 from os import environ
@@ -28,11 +29,12 @@ class DQN_net:
         self.batch_size = batch_size
 
         # Model components:
+        initializer = VarianceScaling(scale=2.0, mode='fan_in', distribution='normal', seed=None)
         frames_input = Input(input_size, name='frames')
         actions_input = Input((action_size,), name='mask')
         norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # may need chaning qq
-        conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size)(norm_frames)
-        conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu')(conv_1)
+        conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size,kernel_initializer=initializer)(norm_frames)
+        conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu', kernel_initializer=initializer)(conv_1)
         flatten = Flatten()(conv_2)
         dense_1 = Dense(256, activation='relu')(flatten)
         output = Dense(action_size)(dense_1)
