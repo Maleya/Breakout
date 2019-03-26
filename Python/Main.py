@@ -26,7 +26,7 @@ env = gym.make('BreakoutDeterministic-v4')
 saved_NN_weights = "saved_weights_new_run_test2.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_new_run_test2.h5"
 saved_epsilon = "latest_epsilon_new_run_test2.csv"
-saved_scores = "plot_data.csv"
+saved_scores = "plot_data_test2.csv"
 
 num_learning_iterations = 10**6/2
 learning_delay = 50000  # dqn settings
