@@ -1,4 +1,3 @@
-import gym
 import numpy as np
 
 
@@ -68,6 +67,7 @@ class Replay_Memory:
 if __name__ == "__main__":
     from preprocess import preprocess
     from Agent import DQN_Agent
+    import gym
 
     Replay_Memory = Replay_Memory()
     env = gym.make('BreakoutDeterministic-v4')
