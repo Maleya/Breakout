@@ -26,10 +26,11 @@ env = gym.make('BreakoutDeterministic-v4')
 saved_NN_weights = "saved_weights_new_run_test2.h5"  # varaiable names set here
 saved_NN_target_weights = "target_saved_weights_new_run_test2.h5"
 saved_epsilon = "latest_epsilon_new_run_test2.csv"
-saved_scores = "plot_data_test2.csv"
+saved_scores = "plot_data_test3.csv" # Number of learning updates between each saved mean(points)
 
-num_learning_iterations = 10**6/2
-learning_delay = 50000  # dqn settings
+num_learning_iterations = 1000
+learning_delay = 50  # dqn settings
+point_saving_freq = 50000
 
 # DATA GATHERING
 prel_history = []
@@ -98,7 +99,7 @@ def episode(agent):
                     agent.epsilon *= agent.epsilon_decay
             # SAVE POINTS IN HISTORY LIST:
 
-            if agent.learning_count % 50000 == 0 and agent.learning_count != 0:
+            if agent.learning_count % point_saving_freq == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
                 print(prel_history)
                 row = [agent.learning_count, np.mean(prel_history)]
@@ -172,9 +173,9 @@ def run_training(num_learning_iterations):
 
     else:
         print(f"IMPORT WARNING: '{saved_scores}' was not found!")
-        # TO DO: make an empty csv file for this 
+        # TO DO: make an empty csv file for this
         # print('starting fresh...')
-    
+
     print("\n\n")
 
     # named section  ---------------------------------------------------------------------
