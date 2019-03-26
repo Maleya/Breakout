@@ -33,16 +33,17 @@ class DQN_net:
         frames_input = Input(input_size, name='frames')
         actions_input = Input((action_size,), name='mask')
         norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # may need chaning qq
-        conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size,kernel_initializer=initializer)(norm_frames)
-        conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu', kernel_initializer=initializer)(conv_1)
-        flatten = Flatten()(conv_2)
-        dense_1 = Dense(256, activation='relu')(flatten)
+        conv_1 = Conv2D(32, (8, 8), strides=4, activation='relu', input_shape=input_size,kernel_initializer=initializer)(norm_frames)
+        conv_2 = Conv2D(64, (4, 4), strides=2, activation='relu', kernel_initializer=initializer)(conv_1)
+        conv_3 = Conv2D(64, (3, 3), strides=1, activation='relu', kernel_initializer=initializer)(conv_2)
+        flatten = Flatten()(conv_3)
+        dense_1 = Dense(512, activation='relu')(flatten)
         output = Dense(action_size)(dense_1)
         masked_output = Multiply()([output, actions_input])
 
         # compile model:
         self.model = Model(inputs=[frames_input, actions_input], outputs=masked_output)
-        optimizer = RMSprop(lr=learning_rate, rho=gradient_momentum, epsilon=0.01)  # from 'Human-level control through deep reinforcement learning'
+        optimizer = RMSprop(lr=learning_rate, rho=gradient_momentum, epsilon=0.01, clipnorm=1.)  # from 'Human-level control through deep reinforcement learning'
         self.model.compile(optimizer, loss='mean_squared_error')
 
     def train(self, batch_states, batch_actions, batch_rewards, batch_new_states, batch_is_dones, target_network):

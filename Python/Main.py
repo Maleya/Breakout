@@ -23,14 +23,14 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_new_run_test2.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_new_run_test2.h5"
-saved_epsilon = "latest_epsilon_new_run_test2.csv"
+saved_NN_weights = "saved_weights_new_run_test3.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_new_run_test3.h5"
+saved_epsilon = "latest_epsilon_new_run_test3.csv"
 saved_scores = "plot_data_test3.csv" # Number of learning updates between each saved mean(points)
 
 num_learning_iterations = 1000
 learning_delay = 50  # dqn settings
-point_saving_freq = 50000
+point_saving_freq = 100
 
 # DATA GATHERING
 prel_history = []
@@ -101,7 +101,6 @@ def episode(agent):
 
             if agent.learning_count % point_saving_freq == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
-                print(prel_history)
                 row = [agent.learning_count, np.mean(prel_history)]
                 with open(f'./data/{saved_scores}', 'a', newline='') as csvFile:
                     writer = csv.writer(csvFile)
