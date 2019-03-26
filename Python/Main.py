@@ -183,8 +183,7 @@ def run_training(num_learning_iterations):
         episode_count += 1
         # PROGRESS PRINTS
         print(f'points for episode {episode_count}: {points}')
-        # print(f'time elapsed: {round(time.time()-start_time,3)} seconds, avg: {round(DQNAgent.memory)/(time.time()-start_time),0)} iterations per second ')
-        print(f"learning iterations: {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done. [{DQNAgent.learning_count}/{num_learning_iterations}] \n")
+        print(f"[{DQNAgent.learning_count}/{num_learning_iterations}] {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done,time elapsed: {round(time.time()-start_time,3)} seconds \n")
 
     return points_history, DQNAgent
 
