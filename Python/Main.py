@@ -6,6 +6,7 @@ num_learning_iterations starts counting after we filled agent memory with agent.
 Before running a fresh run:
     clean out latest_epsilon and plot_data.csv
 """
+import random
 import matplotlib
 import gym
 import numpy as np
@@ -23,14 +24,14 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_new_run_test3.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_new_run_test3.h5"
-saved_epsilon = "latest_epsilon_new_run_test3.csv"
-saved_scores = "plot_data_test3.csv" # Number of learning updates between each saved mean(points)
+saved_NN_weights = "saved_weights_new_run_test4.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_new_run_test4.h5"
+saved_epsilon = "latest_epsilon_new_run_test4.csv"
+saved_scores = "plot_data_test4.csv"  # Number of learning updates between each saved mean(points)
 
-num_learning_iterations = 1000
-learning_delay = 50  # dqn settings
-point_saving_freq = 100
+num_learning_iterations = 10**6
+learning_delay = 50000  # dqn settings
+point_saving_freq = 50000
 
 # DATA GATHERING
 prel_history = []
@@ -53,6 +54,7 @@ Replay_start_size = learning_delay  # The minimum size of memory-replay, after w
 decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
 
 # -------------------------------------------------------------------------
+
 
 def episode(agent):
     '''An episode constitues one normal run of a game.
@@ -188,6 +190,13 @@ def run_training(num_learning_iterations):
     return points_history, DQNAgent
 
 
+def save_test_states(DQN_Agent,sample_size):
+    """only needed once for saving down some states"""
+    mem_len = DQN_Agent.memory.memory_len
+    rand_samp = random.sample(range(mem_len), sample_size)
+    sampled_states = DQN_Agent.memory.states[rand_samp]
+    np.save('./data/q_val_states_5k', sampled_states)
+
 if __name__ == "__main__":
     start_time = time.time()
     points_history, DQNAgent = run_training(num_learning_iterations)
@@ -212,3 +221,4 @@ if __name__ == "__main__":
     plt.ylabel('Average Game Score.')
     plt.savefig('./data/Breakout_score_vr_epochs_#100.pdf')
     plt.show()
+    # save_test_states(DQNAgent, 5000)
