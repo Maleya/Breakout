@@ -43,6 +43,7 @@ class DQN_Agent:
         # Replay Memory for bootstrapping
         #self.memory = deque(maxlen=500000)
         self.memory = Replay_Memory(maxlen=Replay_Memory_size)
+        self.q_val_memory = 0
         # Neural Networks for the DQN:
         # Main Networks that continuisly choose actions.
         self.network = DQN_net(self.state_size, self.action_size,
@@ -83,6 +84,13 @@ class DQN_Agent:
         """
         self.target_network.model.set_weights(self.network.model.get_weights())
 
+    def q_val_for_plot(self):
+        assert type(self.q_val_memory) == np.ndarray 
+        open_mask = np.ones(self.action_size)
+        open_mask_batch = np.stack((open_mask,)*5000, axis = 0)
+        q_val_for_all_states = self.network.model.predict([self.q_val_memory,open_mask_batch])
+        max_q_values_for_all_states = np.max(q_val_for_all_states, axis=-1)
+        return np.mean(max_q_values_for_all_states)
 
 # TEST CODE
 if __name__ == "__main__":

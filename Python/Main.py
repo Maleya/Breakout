@@ -24,14 +24,14 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_new_run_test4.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_new_run_test4.h5"
-saved_epsilon = "latest_epsilon_new_run_test4.csv"
-saved_scores = "plot_data_test4.csv"  # Number of learning updates between each saved mean(points)
-
-num_learning_iterations = 10**6
-learning_delay = 50000  # dqn settings
-point_saving_freq = 50000
+saved_NN_weights = "saved_weights_new_run_q_val_test_1.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_new_run_q_val_test_1.h5"
+saved_epsilon = "latest_epsilon_new_run_q_val_test_1.csv"
+saved_scores = "plot_data_q_val_test_1.csv"  # Number of learning updates between each saved mean(points)
+saved_q_val_states = "q_val_states_5k.npy"
+num_learning_iterations = 500
+learning_delay = 50  # dqn settings
+point_saving_freq = 100
 
 # DATA GATHERING
 prel_history = []
@@ -103,7 +103,8 @@ def episode(agent):
 
             if agent.learning_count % point_saving_freq == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
-                row = [agent.learning_count, np.mean(prel_history)]
+                q_val = agent.q_val_for_plot()
+                row = [agent.learning_count, np.mean(prel_history), q_val]
                 with open(f'./data/{saved_scores}', 'a', newline='') as csvFile:
                     writer = csv.writer(csvFile)
                     writer.writerow(row)
@@ -176,6 +177,13 @@ def run_training(num_learning_iterations):
         print(f"IMPORT WARNING: '{saved_scores}' was not found!")
         # TO DO: make an empty csv file for this
         # print('starting fresh...')
+    if path.isfile(f'./data/{saved_q_val_states}'):
+        DQNAgent.q_val_memory = np.load(f'./data/{saved_q_val_states}')
+        print(f"{saved_q_val_states} loaded successfully!")
+
+    else:
+        print(f"IMPORT WARNING: '{saved_q_val_states}' was not found!")
+        exit()
 
     print("\n\n")
 
