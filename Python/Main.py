@@ -24,10 +24,10 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_new_run_q_val_test_1.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_new_run_q_val_test_1.h5"
-saved_epsilon = "latest_epsilon_new_run_q_val_test_1.csv"
-saved_scores = "plot_data_q_val_test_1.csv"  # Number of learning updates between each saved mean(points)
+saved_NN_weights = "saved_weights_test_atari_NN.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_test_atari_NN.h5"
+saved_epsilon = "latest_epsilon_test_atari_NN.csv"
+saved_scores = "plot_data_test_atari_NN.csv"  # Number of learning updates between each saved mean(points)
 saved_q_val_states = "q_val_states_5k.npy"
 num_learning_iterations = 500
 learning_delay = 50  # dqn settings
