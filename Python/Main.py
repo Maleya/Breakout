@@ -24,14 +24,14 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_test_atari_NN.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_test_atari_NN.h5"
-saved_epsilon = "latest_epsilon_test_atari_NN.csv"
-saved_scores = "plot_data_test_atari_NN.csv"  # Number of learning updates between each saved mean(points)
+saved_NN_weights = "saved_weights_final_1.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_final_1.h5"
+saved_epsilon = "latest_epsilon_final_1.csv"
+saved_scores = "plot_data_final_1.csv"  # Number of learning updates between each saved mean(points)
 saved_q_val_states = "q_val_states_5k.npy"
-num_learning_iterations = 500
-learning_delay = 50  # dqn settings
-point_saving_freq = 100
+num_learning_iterations = 3e6
+learning_delay = 50000  # dqn settings
+point_saving_freq = 50000
 
 # DATA GATHERING
 prel_history = []
@@ -104,7 +104,7 @@ def episode(agent):
             if agent.learning_count % point_saving_freq == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
                 q_val = agent.q_val_for_plot()
-                row = [agent.learning_count, np.mean(prel_history), q_val]
+                row = [agent.learning_count, np.mean(prel_history),np.var(prel_history),np.max(prel_history), q_val]
                 with open(f'./data/{saved_scores}', 'a', newline='') as csvFile:
                     writer = csv.writer(csvFile)
                     writer.writerow(row)
