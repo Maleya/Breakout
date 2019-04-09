@@ -24,15 +24,15 @@ env = gym.make('BreakoutDeterministic-v4')
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
-saved_NN_weights = "saved_weights_final_1.h5"  # varaiable names set here
-saved_NN_target_weights = "target_saved_weights_final_1.h5"
-saved_epsilon = "latest_epsilon_final_1.csv"
-saved_scores = "plot_data_final_1.csv"  # Number of learning updates between each saved mean(points)
+saved_NN_weights = "saved_weights_final_2.h5"  # varaiable names set here
+saved_NN_target_weights = "target_saved_weights_final_2.h5"
+saved_epsilon = "latest_epsilon_final_2.csv"
+saved_scores = "plot_data_final_2.csv"  # Number of learning updates between each saved mean(points)
 saved_q_val_states = "q_val_states_5k.npy"
 num_learning_iterations = 3e6
 learning_delay = 50000  # dqn settings
 point_saving_freq = 50000
-
+weight_saving_freq = 250000
 # DATA GATHERING
 prel_history = []
 points_history = []
@@ -51,8 +51,9 @@ final_exploration_frame = 1000000  # Epsilon decay rate
 Replay_start_size = learning_delay  # The minimum size of memory-replay, after which the sampling and learning process starts
 
 # epsilon decay rate calculation
-decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
-
+#decay_factor = math.exp(math.log(final_exploration)/final_exploration_frame)
+decay_factor = (final_exploration-initial_exploration)/final_exploration_frame
+print(decay_factor)
 # -------------------------------------------------------------------------
 
 
@@ -98,11 +99,16 @@ def episode(agent):
 
                 # decaying epsilon.
                 if agent.epsilon > agent.min_epsilon:
-                    agent.epsilon *= agent.epsilon_decay
+                    agent.epsilon = initial_exploration + agent.epsilon_decay*agent.learning_count
+                   
+
             # SAVE POINTS IN HISTORY LIST:
 
             if agent.learning_count % point_saving_freq == 0 and agent.learning_count != 0:
                 points_history.append(np.mean(prel_history))
+                print('#################################################')
+                print(f'MEAN SCORE AT {agent.learning_count} IS {np.mean(prel_history)} with ε = {round(agent.epsilon,3)}')
+                print('#################################################')
                 q_val = agent.q_val_for_plot()
                 row = [agent.learning_count, np.mean(prel_history),np.var(prel_history),np.max(prel_history), q_val]
                 with open(f'./data/{saved_scores}', 'a', newline='') as csvFile:
@@ -110,6 +116,12 @@ def episode(agent):
                     writer.writerow(row)
                 csvFile.close()
                 prel_history.clear()
+                # SAVING WEIGHTS
+                if agent.learning_count % weight_saving_freq == 0 and agent.learning_count != 0:
+                    agent.network.model.save_weights(f'./data/{saved_NN_weights}')
+                    agent.target_network.model.save_weights(f'./data/{saved_NN_target_weights}')
+
+                    print(f"{saved_NN_weights} and {saved_NN_target_weights} saved successfully!")
         state = new_state
         agent.iteration_count += 1
 
