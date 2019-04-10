@@ -99,7 +99,7 @@ def episode(agent):
 
                 # decaying epsilon.
                 if agent.epsilon > agent.min_epsilon:
-                    agent.epsilon = initial_exploration + agent.epsilon_decay*agent.learning_count
+                    agent.epsilon = agent.epsilon + decay_factor
                    
 
             # SAVE POINTS IN HISTORY LIST:
@@ -204,9 +204,12 @@ def run_training(num_learning_iterations):
         points = episode(DQNAgent)
         episode_count += 1
         # PROGRESS PRINTS
+        ratio = (DQNAgent.learning_count+1) / num_learning_iterations # avoid the 0 division 
+        seconds = time.time()-start_time
         print(f'points for episode {episode_count}: {points}')
-        print(f"[{DQNAgent.learning_count}/{num_learning_iterations}] {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done,time elapsed: {round(time.time()-start_time,3)} seconds \n")
-
+        print(f"[{DQNAgent.learning_count}/{num_learning_iterations}] {round(DQNAgent.learning_count/num_learning_iterations*100,3)}% done,time elapsed: {round(time.time()-start_time,3)} seconds")
+        print(f"ETA: {round(seconds/(ratio*3600) - seconds/3600,3)}h (predicted runtime:{round(seconds/(ratio*3600),3)}h) \n")
+        
     return points_history, DQNAgent
 
 
