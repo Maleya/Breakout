@@ -5,7 +5,7 @@ matplotlib.use("TkAgg")  # for mac users
 import numpy as np
 import csv
 from matplotlib import pyplot as plt
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 15})
 # ------------- load the data -------------
 mean_score_list = []
 learning_count_list = []
