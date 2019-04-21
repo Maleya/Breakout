@@ -21,8 +21,7 @@ matplotlib.use("TkAgg")  # for mac users
 from matplotlib import pyplot as plt
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # reduces verbosity of tensorflow?
 env = gym.make('BreakoutDeterministic-v4')
-x = env.unwrapped.get_action_meanings()
-print(x)
+
 
 
 # SETTINGS & PARAMETERS --------------------------------------------------
