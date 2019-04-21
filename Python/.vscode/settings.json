@@ -2,5 +2,6 @@
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": false,
-    "python.linting.flake8Path":"C:/Users/Martti/Anaconda3/Scripts/flake8",
+    "python.linting.flake8Path": "C:/Users/Martti/Anaconda3/Scripts/flake8",
+    "python.formatting.provider": "black",
 }
