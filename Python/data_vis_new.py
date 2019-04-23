@@ -36,7 +36,7 @@ with open("./data/plot_data_final_2.csv", "r") as csvFile:
         q_val_list.append(float(q_val))
 
 
-with open("./data/plot_data_final_2_run2.csv", "r") as csvFile:
+with open("./data/plot_data_final_2_run2_new.csv", "r") as csvFile:
     next(csvFile)
     reader = csv.reader(csvFile)
     for row in reader:
@@ -64,25 +64,25 @@ plt.plot(
 plt.plot(
     np.linspace(0, len(sd_upperbound_list), len(sd_upperbound_list)),
     sd_upperbound_list,
-    "-",
-    label="mean score + one SD ",
+    "k-",lw=0.8,
+    label="mean score +- one SD ",
 )
 plt.plot(
     np.linspace(0, len(sd_upperbound_list), len(sd_upperbound_list)),
     sd_lowerbound_list,
-    "-",
-    label="mean score - one SD",
+    "k-", lw=0.8,
 )
-plt.legend()
+#plt.legend()
 # plt.fill_between(sd_upperbound_list, sd_lowerbound_list, 1)
 
 
-plt.axhline(y=1.3217, alpha=0.3, label="mean random agent score (10000 episodes)")
+
+#plt.axhline(y=1.3217, alpha=0.3,linestyle='--',label="mean random agent score (10000 episodes)")
 plt.xlabel("Training Epochs")
 plt.ylabel("Average Reward per Episode")
 plt.title("Average Reward on Breakout")
-# plt.legend()
-plt.tight_layout()
+#plt.legend()
+#plt.tight_layout()
 plt.show()
 
 plt.figure("Max Score")

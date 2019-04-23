@@ -192,6 +192,7 @@ def run_training(num_learning_iterations):
         # print('starting fresh...')
     if path.isfile(f'./data/{saved_q_val_states}'):
         DQNAgent.q_val_memory = np.load(f'./data/{saved_q_val_states}')
+        print(DQNAgent.q_val_memory.size)
         print(f"{saved_q_val_states} loaded successfully!")
 
     else:
