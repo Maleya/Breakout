@@ -1,4 +1,4 @@
-# initializer ??Breakout-v4
+# Breakout-v4
 
 Learning to play Breakout through reinforcement learning, implementing the DQN algorithm described in the article '[Playing Atari with Deep Reinforcement Learning](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)'.  *This is still very much a work in progress*
 
