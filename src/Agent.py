@@ -2,8 +2,8 @@ import gym
 import numpy as np
 import random as rnd
 from collections import deque
-from NeuralNet import DQN_net
-from Replay_Memory import Replay_Memory
+from neuralnet import DQN_net
+from replay_memory import Replay_Memory
 env = gym.make('BreakoutDeterministic-v4')
 
 

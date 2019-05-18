@@ -14,7 +14,7 @@ import time
 import csv
 import math
 from os import environ, path
-from Agent import DQN_Agent
+from agent import DQN_Agent
 from stack_frames import stack_frames
 from preprocess import preprocess
 matplotlib.use("TkAgg")  # for mac users

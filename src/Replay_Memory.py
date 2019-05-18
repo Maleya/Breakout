@@ -66,7 +66,7 @@ class Replay_Memory:
 # TEST CODE
 if __name__ == "__main__":
     from preprocess import preprocess
-    from Agent import DQN_Agent
+    from agent import DQN_Agent
     import gym
 
     Replay_Memory = Replay_Memory()
