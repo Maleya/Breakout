@@ -6,16 +6,15 @@ Learning to play Breakout through reinforcement learning, implementing the DQN a
 
 ## Dependencies
 
-Installable through pip or conda  
+Installable through pip or [Conda](https://www.anaconda.com/)  
 
-- **Gym*** 
+- **Gym**
 - **Pillow**:
 - **Matplotlib:**  *for plotting results*
-- **Keras**: 
-
-\* Windows fix: via [here](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows):
+- **Keras***
 
 ```
 pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
 ```
 
+* *Windows fix:  [source](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows):*

@@ -32,8 +32,8 @@ class DQN_net:
         initializer = VarianceScaling(scale=2.0, mode='fan_in', distribution='normal', seed=None)
         frames_input = Input(input_size, name='frames')
         actions_input = Input((action_size,), name='mask')
-        norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # may need chaning qq
-        conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size,kernel_initializer=initializer)(norm_frames)
+        # norm_frames = Lambda(lambda x: x / 255.0)(frames_input) # now in preprocessing
+        conv_1 = Conv2D(16, (8, 8), strides=4, activation='relu', input_shape=input_size,kernel_initializer=initializer)(frames_input)
         conv_2 = Conv2D(32, (4, 4), strides=2, activation='relu', kernel_initializer=initializer)(conv_1)
         #conv_3 = Conv2D(64, (3, 3), strides=1, activation='relu', kernel_initializer=initializer)(conv_2)
         flatten = Flatten()(conv_2)

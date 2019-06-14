@@ -11,5 +11,6 @@ def preprocess(im):
     im = im.convert('L')
     im = im.crop((8, 31, 152, 210))  # somewhat good settings for breakout
     im = im.resize((84, 84))
-    # im.show()
-    return(np.array(im))
+    im = np.array(im)
+    im = im / 255.0 # normalise between 0 and 1
+    return(im)
