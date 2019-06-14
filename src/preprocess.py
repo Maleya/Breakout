@@ -7,6 +7,7 @@ import numpy as np
 
 
 def preprocess(im):
+    """ grayscales, normalises, crops and downsamples the image"""
     im = Image.fromarray(im)
     im = im.convert('L')
     im = im.crop((8, 31, 152, 210))  # somewhat good settings for breakout
