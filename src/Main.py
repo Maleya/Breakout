@@ -221,29 +221,3 @@ def save_test_states(DQN_Agent,sample_size):
     rand_samp = random.sample(range(mem_len), sample_size)
     sampled_states = DQN_Agent.memory.states[rand_samp]
     np.save('./data/q_val_states_5k', sampled_states)
-
-if __name__ == "__main__":
-    start_time = time.time()
-    points_history, DQNAgent = run_training(num_learning_iterations)
-    env.close()
-
-    # SAVE FILES
-    DQNAgent.network.model.save_weights(f'./data/{saved_NN_weights}')
-    DQNAgent.target_network.model.save_weights(f'./data/{saved_NN_target_weights}')
-    with open(f'./data/{saved_epsilon}', 'w', newline='') as csvFile:
-        writer = csv.writer(csvFile)
-        writer.writerow([DQNAgent.epsilon])
-    csvFile.close()
-
-    # plots and time-keeping
-    episodes_v = [i for i in range(int(len(points_history)))]
-    total_t = round(time.time()-start_time, 3)
-    print(f'TOTAL TIME TAKEN: {round(total_t/3600,3)} hours')
-    print(f'TOTAL TIME TAKEN: {total_t} seconds')
-
-    plt.plot(episodes_v, points_history, '.')
-    plt.xlabel('Number of Played Game Epochs.')
-    plt.ylabel('Average Game Score.')
-    plt.savefig('./data/Breakout_score_vr_epochs_#100.pdf')
-    plt.show()
-    # save_test_states(DQNAgent, 5000)

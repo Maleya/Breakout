@@ -84,32 +84,3 @@ class DQN_net:
         # New input: batch_states
         self.model.fit([batch_states, action_mask_batch], target_batch,
                        batch_size=self.batch_size, epochs=1, verbose=0)
-
-
-# TEST CODE
-if __name__ == "__main__":
-    from preprocess import preprocess
-
-    env = gym.make('BreakoutDeterministic-v4')
-    frame = env.reset()
-    new_frame, reward, is_done, _ = env.step(env.action_space.sample())
-    new_frame = preprocess(new_frame)
-    state = np.stack((new_frame,)*4, axis=-1)
-    state_size = state.shape
-
-
-
-    action_size = env.action_space.n  # Gives a size of 9?!? change to 4!!
-    print("state size:", state_size)
-    print("action size:", action_size)
-    obs = np.expand_dims(state, axis=0)     # (Formatting issues) Making the observation the first element of a batch of inputs
-    print("obs shape:", obs.shape)
-    test_net = DQN_net(state_size, action_size)
-
-    # predictions
-    mask_ones = np.ones(action_size)
-    mask_ones = np.expand_dims(mask_ones, axis=0)
-    # mask_ones[0][2] = 1
-    test_target_predicted = test_net.model.predict([obs, mask_ones])
-    print("Q predictions:", test_target_predicted)
-    print(f"preferrable action-index: {np.argmax(test_target_predicted)} ({max(test_target_predicted[0])})")

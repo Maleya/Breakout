@@ -92,21 +92,3 @@ class DQN_Agent:
         max_q_values_for_all_states = np.max(q_val_for_all_states, axis=-1)
         return np.mean(max_q_values_for_all_states)
 
-# TEST CODE
-if __name__ == "__main__":
-    env = gym.make('MsPacman-v0')
-    frame = env.reset()
-    state_size = env.observation_space.shape
-    action_size = env.action_space.n  # Gives a size of 9?!? change to 4!
-    test_agent = DQN_Agent(state_size, action_size)
-    state = np.expand_dims(frame, axis=0)
-    # -----get_action-----
-    action = test_agent.get_action(state)
-
-    # ---- add_experience ----
-    new_frame, reward, is_done, _ = env.step(action)
-    new_state = np.expand_dims(new_frame, axis=0)
-    test_agent.add_experience(state, action, reward, new_state, is_done)
-    experience_batch = test_agent.sample_experience()
-    # print(experience_batch)
-    test_agent.network.train(experience_batch, test_agent.target_network)
